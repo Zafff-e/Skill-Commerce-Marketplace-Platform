@@ -1,7 +1,0 @@
-Database Tables: 1. SkillSets (can be added a new skill by professionals)
-                                           2. Professional Profiles => Category
-                                           3. Professional Skills 
-                                           4. Bookings
-                                           5. Transactions
-                                           6. Auth&AuthZ
-                                           7. PartsForRepair
