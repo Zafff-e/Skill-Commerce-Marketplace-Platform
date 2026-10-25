@@ -1,0 +1,131 @@
+[
+  {
+    "_id": "MONGO_PROD_AC_CAP_001",
+    "sku": "CAP-AC-45UF",
+    "title": "SHIZUKI 45uF CBB65 Dual Run Motor Capacitor for Inverter AC",
+    "slug": "shizuki-45uf-cbb65-dual-run-capacitor",
+    "category": "Electronics & Appliances",
+    "brand": "SHIZUKI",
+    "price": {
+      "amount": 650.00,
+      "currency": "BDT",
+      "discountPercent": 0
+    },
+    "isPreOrder": false,
+    "dynamicAttributes": {
+      "capacitance": "45uF +/- 5%",
+      "ratedVoltage": "450V AC",
+      "frequency": "50/60 Hz",
+      "temperatureRange": "-40C to +85C",
+      "cylinderMaterial": "Aluminum Can Anti-Explosion"
+    },
+    "compatibility": ["Gree 1.5 Ton Inverter", "General 1.5 Ton", "Carrier 2.0 Ton", "Midea Inverter"],
+    "images": [
+      {
+        "url": "https://storage.dokkholok.com/products/capacitor_45uf_front.webp",
+        "altText": "SHIZUKI 45uF AC Capacitor Front View",
+        "isPrimary": true
+      }
+    ],
+    "isActive": true,
+    "createdAt": { "$date": "2026-10-01T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-10-01T00:00:00.000Z" }
+  },
+  {
+    "_id": "MONGO_PROD_R32_GAS_002",
+    "sku": "GAS-R32-CYL",
+    "title": "Honeywell Genetron R32 High-Purity Refrigerant Gas (3.0 kg Canister)",
+    "slug": "honeywell-genetron-r32-gas-canister",
+    "category": "Electronics & Appliances",
+    "brand": "Honeywell",
+    "price": {
+      "amount": 2600.00,
+      "currency": "BDT",
+      "discountPercent": 5
+    },
+    "isPreOrder": false,
+    "dynamicAttributes": {
+      "refrigerantType": "R-32 (Difluoromethane)",
+      "cylinderWeightKg": 3.0,
+      "purityGrade": "99.98% Ultra Pure",
+      "ozoneDepletionPotential": 0,
+      "globalWarmingPotential": 675
+    },
+    "compatibility": ["Daikin Ururu Sarara", "Gree Fairy Inverter", "Samsung WindFree Inverter"],
+    "images": [
+      {
+        "url": "https://storage.dokkholok.com/products/honeywell_r32_gas.webp",
+        "altText": "Honeywell R32 Canister",
+        "isPrimary": true
+      }
+    ],
+    "isActive": true,
+    "createdAt": { "$date": "2026-10-05T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-10-05T00:00:00.000Z" }
+  },
+  {
+    "_id": "MONGO_PROD_SCHNEIDER_MCB_003",
+    "sku": "MCB-SCH-32A-2P",
+    "title": "Schneider Electric Easy9 32A Double Pole C-Curve MCB Circuit Breaker",
+    "slug": "schneider-easy9-32a-2p-mcb",
+    "category": "Electrical & Wiring",
+    "brand": "Schneider Electric",
+    "price": {
+      "amount": 1150.00,
+      "currency": "BDT",
+      "discountPercent": 0
+    },
+    "isPreOrder": false,
+    "dynamicAttributes": {
+      "ratedCurrent": "32A",
+      "numberOfPoles": "2P (Double Pole)",
+      "trippingCurve": "C-Curve (5-10 In)",
+      "breakingCapacity": "6 kA IEC 60898-1",
+      "mounting": "DIN Rail 35mm"
+    },
+    "compatibility": ["Residential Distribution Boards", "Commercial Sub-Distribution"],
+    "images": [
+      {
+        "url": "https://storage.dokkholok.com/products/schneider_32a_mcb.webp",
+        "altText": "Schneider Easy9 32A MCB",
+        "isPrimary": true
+      }
+    ],
+    "isActive": true,
+    "createdAt": { "$date": "2026-10-10T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-10-10T00:00:00.000Z" }
+  },
+  {
+    "_id": "MONGO_PROD_LAPTOP_MB_PRE_004",
+    "sku": "MB-DELL-5590-I7",
+    "title": "Dell Latitude 5590 Motherboard (Core i7-8650U with MX130 GPU) [Pre-Order]",
+    "slug": "dell-latitude-5590-motherboard-i7",
+    "category": "Computer & IT Support",
+    "brand": "Dell OEM",
+    "price": {
+      "amount": 16500.00,
+      "currency": "BDT",
+      "discountPercent": 0
+    },
+    "isPreOrder": true,
+    "preOrderEstimatedArrival": { "$date": "2026-11-15T00:00:00.000Z" },
+    "dynamicAttributes": {
+      "processor": "Intel Core i7-8650U Quad-Core 4.2 GHz",
+      "gpu": "NVIDIA GeForce MX130 2GB GDDR5",
+      "ramSlots": "2x DDR4 SO-DIMM (Max 32GB)",
+      "storageInterface": "M.2 NVMe PCIe Gen3 x4 + 2.5 SATA",
+      "warrantyMonths": 6
+    },
+    "compatibility": ["Dell Latitude 5590 Series Laptop"],
+    "images": [
+      {
+        "url": "https://storage.dokkholok.com/products/dell_5590_motherboard.webp",
+        "altText": "Dell 5590 Motherboard Component",
+        "isPrimary": true
+      }
+    ],
+    "isActive": true,
+    "createdAt": { "$date": "2026-10-15T00:00:00.000Z" },
+    "updatedAt": { "$date": "2026-10-15T00:00:00.000Z" }
+  }
+]

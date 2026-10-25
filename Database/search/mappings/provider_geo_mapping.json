@@ -1,0 +1,31 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
+  "mappings": {
+    "properties": {
+      "profileId": { "type": "keyword" },
+      "userId": { "type": "keyword" },
+      "fullName": {
+        "type": "text",
+        "fields": {
+          "keyword": { "type": "keyword" }
+        }
+      },
+      "bio": { "type": "text" },
+      "skills": { "type": "keyword" },
+      "location": { "type": "geo_point" },
+      "serviceRadiusKm": { "type": "float" },
+      "city": { "type": "keyword" },
+      "district": { "type": "keyword" },
+      "baseVisitingCharge": { "type": "double" },
+      "averageRating": { "type": "float" },
+      "totalReviewsCount": { "type": "integer" },
+      "isVerified": { "type": "boolean" },
+      "isActive": { "type": "boolean" },
+      "isEmergencyAvailable": { "type": "boolean" },
+      "badges": { "type": "keyword" }
+    }
+  }
+}

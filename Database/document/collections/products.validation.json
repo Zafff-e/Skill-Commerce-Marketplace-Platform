@@ -1,0 +1,97 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["_id", "title", "sku", "category", "price", "isPreOrder", "isActive", "createdAt"],
+    "properties": {
+      "_id": {
+        "bsonType": "string",
+        "description": "Immutable UUID string referencing product across relational and document layers"
+      },
+      "sku": {
+        "bsonType": "string",
+        "pattern": "^[A-Z0-9_-]{3,60}$",
+        "description": "Unique Stock Keeping Unit"
+      },
+      "title": {
+        "bsonType": "string",
+        "minLength": 3,
+        "maxLength": 250,
+        "description": "Human-readable product title"
+      },
+      "slug": {
+        "bsonType": "string",
+        "description": "URL-friendly slug"
+      },
+      "category": {
+        "bsonType": "string",
+        "description": "Primary catalog category name"
+      },
+      "brand": {
+        "bsonType": "string",
+        "description": "Manufacturer or brand name"
+      },
+      "price": {
+        "bsonType": "object",
+        "required": ["amount", "currency"],
+        "properties": {
+          "amount": {
+            "bsonType": ["double", "int", "long", "decimal"],
+            "minimum": 0,
+            "description": "Retail price in local currency"
+          },
+          "currency": {
+            "bsonType": "string",
+            "enum": ["BDT"],
+            "description": "Currency code"
+          },
+          "discountPercent": {
+            "bsonType": ["int", "double"],
+            "minimum": 0,
+            "maximum": 100
+          }
+        }
+      },
+      "isPreOrder": {
+        "bsonType": "boolean",
+        "description": "Indicates whether item is available for advance pre-ordering"
+      },
+      "preOrderEstimatedArrival": {
+        "bsonType": ["date", "null"],
+        "description": "Expected warehouse arrival date for pre-order goods"
+      },
+      "dynamicAttributes": {
+        "bsonType": "object",
+        "description": "Polymorphic technical specifications (e.g., tonnage, capacitance, voltage, gas type)"
+      },
+      "compatibility": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "string"
+        },
+        "description": "List of appliance or equipment models compatible with this part"
+      },
+      "images": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "object",
+          "required": ["url", "isPrimary"],
+          "properties": {
+            "url": { "bsonType": "string" },
+            "altText": { "bsonType": "string" },
+            "isPrimary": { "bsonType": "boolean" }
+          }
+        }
+      },
+      "isActive": {
+        "bsonType": "boolean",
+        "description": "Catalog publication status"
+      },
+      "createdAt": {
+        "bsonType": "date"
+      },
+      "updatedAt": {
+        "bsonType": "date"
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "description": "Enriches, normalizes, and sanitizes incoming products and provider records prior to indexing",
+  "processors": [
+    {
+      "set": {
+        "field": "_source.indexed_at",
+        "value": "{{{_ingest.timestamp}}}"
+      }
+    },
+    {
+      "trim": {
+        "field": "title",
+        "ignore_missing": true
+      }
+    },
+    {
+      "trim": {
+        "field": "fullName",
+        "ignore_missing": true
+      }
+    }
+  ]
+}

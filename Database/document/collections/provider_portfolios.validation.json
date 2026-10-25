@@ -1,0 +1,38 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["_id", "providerId", "certifications", "completedProjects", "updatedAt"],
+    "properties": {
+      "_id": { "bsonType": "string" },
+      "providerId": { "bsonType": "string", "description": "Relational ProviderProfile ProfileId UUID" },
+      "certifications": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "object",
+          "required": ["institution", "certificateName", "yearObtained"],
+          "properties": {
+            "institution": { "bsonType": "string" },
+            "certificateName": { "bsonType": "string" },
+            "credentialUrl": { "bsonType": "string" },
+            "yearObtained": { "bsonType": "int" }
+          }
+        }
+      },
+      "completedProjects": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "object",
+          "required": ["title", "completionDate"],
+          "properties": {
+            "title": { "bsonType": "string" },
+            "description": { "bsonType": "string" },
+            "beforeImageUrl": { "bsonType": "string" },
+            "afterImageUrl": { "bsonType": "string" },
+            "completionDate": { "bsonType": "date" }
+          }
+        }
+      },
+      "updatedAt": { "bsonType": "date" }
+    }
+  }
+}
