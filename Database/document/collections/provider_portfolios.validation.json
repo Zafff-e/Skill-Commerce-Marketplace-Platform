@@ -32,6 +32,19 @@
           }
         }
       },
+      "externalReferences": {
+        "bsonType": "array",
+        "description": "External trade references or client endorsements",
+        "items": {
+          "bsonType": "object",
+          "required": ["clientName", "contactNumber"],
+          "properties": {
+            "clientName": { "bsonType": "string" },
+            "contactNumber": { "bsonType": "string" },
+            "workDescription": { "bsonType": "string" }
+          }
+        }
+      },
       "updatedAt": { "bsonType": "date" }
     }
   }

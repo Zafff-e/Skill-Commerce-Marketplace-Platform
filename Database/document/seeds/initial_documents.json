@@ -1,0 +1,192 @@
+{
+  "products": [
+    {
+      "_id": "MONGO_PROD_AC_CAP_001",
+      "sku": "CAP-AC-45UF",
+      "title": "SHIZUKI 45uF CBB65 Dual Run Motor Capacitor for Inverter AC",
+      "slug": "shizuki-45uf-cbb65-dual-run-capacitor",
+      "category": "Electronics & Appliances",
+      "brand": "SHIZUKI",
+      "price": {
+        "amount": 650.00,
+        "currency": "BDT",
+        "discountPercent": 0
+      },
+      "isPreOrder": false,
+      "dynamicAttributes": {
+        "capacitance": "45uF +/- 5%",
+        "ratedVoltage": "450V AC",
+        "frequency": "50/60 Hz",
+        "temperatureRange": "-40C to +85C",
+        "cylinderMaterial": "Aluminum Can Anti-Explosion"
+      },
+      "variants": [
+        {
+          "variantSku": "CAP-AC-45UF-STD",
+          "variantName": "Standard 45uF Round",
+          "variantAttributes": { "shape": "Round", "tolerance": "+/-5%" },
+          "price": { "amount": 650.00, "currency": "BDT" },
+          "stockQuantity": 50
+        },
+        {
+          "variantSku": "CAP-AC-50UF-HVY",
+          "variantName": "Heavy Duty 50uF Dual Terminal",
+          "variantAttributes": { "shape": "Oval", "tolerance": "+/-3%" },
+          "price": { "amount": 750.00, "currency": "BDT" },
+          "stockQuantity": 25
+        }
+      ],
+      "compatibility": ["Gree 1.5 Ton Inverter", "General 1.5 Ton", "Carrier 2.0 Ton", "Midea Inverter"],
+      "images": [
+        {
+          "url": "https://storage.dokkholok.com/products/capacitor_45uf_front.webp",
+          "altText": "SHIZUKI 45uF AC Capacitor Front View",
+          "isPrimary": true
+        }
+      ],
+      "isActive": true,
+      "createdAt": { "$date": "2026-10-01T00:00:00.000Z" },
+      "updatedAt": { "$date": "2026-10-01T00:00:00.000Z" }
+    },
+    {
+      "_id": "MONGO_PROD_R32_GAS_002",
+      "sku": "GAS-R32-CYL",
+      "title": "Honeywell Genetron R32 High-Purity Refrigerant Gas (3.0 kg Canister)",
+      "slug": "honeywell-genetron-r32-gas-canister",
+      "category": "Electronics & Appliances",
+      "brand": "Honeywell",
+      "price": {
+        "amount": 2600.00,
+        "currency": "BDT",
+        "discountPercent": 5
+      },
+      "isPreOrder": false,
+      "dynamicAttributes": {
+        "refrigerantType": "R-32 (Difluoromethane)",
+        "cylinderWeightKg": 3.0,
+        "purityGrade": "99.98% Ultra Pure",
+        "ozoneDepletionPotential": 0,
+        "globalWarmingPotential": 675
+      },
+      "variants": [
+        {
+          "variantSku": "GAS-R32-CYL-3KG",
+          "variantName": "3.0 kg Portable Canister",
+          "variantAttributes": { "weight": "3kg", "valveType": "Standard Flare 1/4" },
+          "price": { "amount": 2600.00, "currency": "BDT" },
+          "stockQuantity": 30
+        },
+        {
+          "variantSku": "GAS-R32-CYL-9KG",
+          "variantName": "9.5 kg Workshop Cylinder",
+          "variantAttributes": { "weight": "9.5kg", "valveType": "Heavy Duty Valve" },
+          "price": { "amount": 7200.00, "currency": "BDT" },
+          "stockQuantity": 10
+        }
+      ],
+      "compatibility": ["Daikin Ururu Sarara", "Gree Fairy Inverter", "Samsung WindFree Inverter"],
+      "images": [
+        {
+          "url": "https://storage.dokkholok.com/products/honeywell_r32_gas.webp",
+          "altText": "Honeywell R32 Canister",
+          "isPrimary": true
+        }
+      ],
+      "isActive": true,
+      "createdAt": { "$date": "2026-10-05T00:00:00.000Z" },
+      "updatedAt": { "$date": "2026-10-05T00:00:00.000Z" }
+    },
+    {
+      "_id": "MONGO_PROD_LAPTOP_MB_PRE_004",
+      "sku": "MB-DELL-5590-I7",
+      "title": "Dell Latitude 5590 Motherboard (Core i7-8650U with MX130 GPU) [Pre-Order]",
+      "slug": "dell-latitude-5590-motherboard-i7",
+      "category": "Computer & IT Support",
+      "brand": "Dell OEM",
+      "price": {
+        "amount": 16500.00,
+        "currency": "BDT",
+        "discountPercent": 0
+      },
+      "isPreOrder": true,
+      "preOrderEstimatedArrival": { "$date": "2026-11-15T00:00:00.000Z" },
+      "dynamicAttributes": {
+        "processor": "Intel Core i7-8650U Quad-Core 4.2 GHz",
+        "gpu": "NVIDIA GeForce MX130 2GB GDDR5",
+        "ramSlots": "2x DDR4 SO-DIMM (Max 32GB)",
+        "warrantyMonths": 6
+      },
+      "variants": [
+        {
+          "variantSku": "MB-DELL-5590-I7-UMA",
+          "variantName": "Integrated Graphics (Intel UHD 620)",
+          "variantAttributes": { "gpu": "UMA" },
+          "price": { "amount": 14500.00, "currency": "BDT" },
+          "stockQuantity": 5
+        },
+        {
+          "variantSku": "MB-DELL-5590-I7-DIS",
+          "variantName": "Dedicated Graphics (NVIDIA MX130 2GB)",
+          "variantAttributes": { "gpu": "MX130" },
+          "price": { "amount": 16500.00, "currency": "BDT" },
+          "stockQuantity": 8
+        }
+      ],
+      "compatibility": ["Dell Latitude 5590 Series Laptop"],
+      "images": [
+        {
+          "url": "https://storage.dokkholok.com/products/dell_5590_motherboard.webp",
+          "altText": "Dell 5590 Motherboard Component",
+          "isPrimary": true
+        }
+      ],
+      "isActive": true,
+      "createdAt": { "$date": "2026-10-15T00:00:00.000Z" },
+      "updatedAt": { "$date": "2026-10-15T00:00:00.000Z" }
+    }
+  ],
+  "provider_portfolios": [
+    {
+      "_id": "PORTFOLIO_PRO1_RAFIQUL",
+      "providerId": "A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1",
+      "certifications": [
+        {
+          "institution": "Bangladesh-Korea Technical Training Center (BKTTC)",
+          "certificateName": "National Skill Standard Basic (HVAC & Refrigeration Maintenance)",
+          "credentialUrl": "https://storage.dokkholok.com/certs/bkttc_rafiqul_hvac.pdf",
+          "yearObtained": 2017
+        },
+        {
+          "institution": "Daikin VRV Certified Installer Network",
+          "certificateName": "Inverter DC Compressor Fault Analysis Specialist",
+          "credentialUrl": "https://storage.dokkholok.com/certs/daikin_inverter_rafiqul.pdf",
+          "yearObtained": 2021
+        }
+      ],
+      "completedProjects": [
+        {
+          "title": "Commercial VRF System Servicing - Gulshan Corporate Plaza",
+          "description": "Cleaned high-pressure condenser loops, nitrogen leak tested copper flare joints, refilled R410A gas.",
+          "beforeImageUrl": "https://storage.dokkholok.com/jobs/gulshan_vrf_before.webp",
+          "afterImageUrl": "https://storage.dokkholok.com/jobs/gulshan_vrf_after.webp",
+          "completionDate": { "$date": "2026-09-12T00:00:00.000Z" }
+        },
+        {
+          "title": "Residential 2.0 Ton Inverter AC PCB Chip Recovery",
+          "description": "Repaired IPM power module burnout and replaced 45uF dual start capacitor in Mirpur DOHS.",
+          "beforeImageUrl": "https://storage.dokkholok.com/jobs/mirpur_ac_before.webp",
+          "afterImageUrl": "https://storage.dokkholok.com/jobs/mirpur_ac_after.webp",
+          "completionDate": { "$date": "2026-10-02T00:00:00.000Z" }
+        }
+      ],
+      "externalReferences": [
+        {
+          "clientName": "Engr. Monirul Islam (Facility Manager, Prime Heights)",
+          "contactNumber": "+8801711002233",
+          "workDescription": "Quarterly HVAC servicing contract maintenance"
+        }
+      ],
+      "updatedAt": { "$date": "2026-10-20T00:00:00.000Z" }
+    }
+  ]
+}

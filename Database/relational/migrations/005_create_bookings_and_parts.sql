@@ -1,6 +1,6 @@
 -- ============================================================================
--- Migration: 003_create_bookings_and_parts.sql
--- Module: Work Orders, Real-Time Service Bookings & Consumed Parts
+-- Migration: 005_create_bookings_and_parts.sql
+-- Module: Work Orders, Real-Time Service Bookings & Warehouse Parts Deduction
 -- Platform: SkillCommerce / Dokkho Lok Khuji (দক্ষ লোক খুঁজি)
 -- Target Database: Microsoft SQL Server 2019+ / 2022
 -- ============================================================================
@@ -10,7 +10,7 @@ GO
 
 -- 1. SERVICE BOOKINGS (Primary Service Work Orders)
 -- Business Rules:
--- 1. One user can book any professional (and a professional can book another professional).
+-- 1. Binds 1-to-1 with a unified BillableEntity for clean invoice & payment handling.
 -- 2. Emergency booking support with dynamic call-out fee.
 -- 3. Supports voice note attachment URL for accessible booking.
 -- 4. Optimistic concurrency control via [Version].
@@ -18,6 +18,7 @@ IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ServiceBookings' AND schem
 BEGIN
     CREATE TABLE [dbo].[ServiceBookings] (
         [BookingId] UNIQUEIDENTIFIER NOT NULL DEFAULT (NEWSEQUENTIALID()),
+        [BillableEntityId] UNIQUEIDENTIFIER NOT NULL, -- 1-to-1 link to polymorphic BillableEntity
         [BookingReference] NVARCHAR(32) NOT NULL, -- Human-readable, e.g., 'BK-202610-A9F2'
         [CustomerId] UNIQUEIDENTIFIER NOT NULL,
         [ProviderId] UNIQUEIDENTIFIER NOT NULL,
@@ -48,6 +49,8 @@ BEGIN
         [CompletedAt] DATETIMEOFFSET NULL,
         CONSTRAINT [PK_ServiceBookings] PRIMARY KEY CLUSTERED ([BookingId] ASC),
         CONSTRAINT [UQ_ServiceBookings_Reference] UNIQUE ([BookingReference]),
+        CONSTRAINT [UQ_ServiceBookings_BillableEntity] UNIQUE ([BillableEntityId]),
+        CONSTRAINT [FK_ServiceBookings_BillableEntities] FOREIGN KEY ([BillableEntityId]) REFERENCES [dbo].[BillableEntities] ([BillableEntityId]),
         CONSTRAINT [FK_ServiceBookings_Customers] FOREIGN KEY ([CustomerId]) REFERENCES [dbo].[Users] ([UserId]),
         CONSTRAINT [FK_ServiceBookings_Providers] FOREIGN KEY ([ProviderId]) REFERENCES [dbo].[ProviderProfiles] ([ProfileId]),
         CONSTRAINT [FK_ServiceBookings_Skills] FOREIGN KEY ([SkillId]) REFERENCES [dbo].[SkillSets] ([SkillId])
@@ -83,25 +86,33 @@ GO
 
 -- 3. PARTS CONSUMED IN REPAIR / SERVICE
 -- Itemized line items of hardware or replacement parts supplied on-site
+-- Linked directly to warehouse InventoryItems; freezes price & snapshot data
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'PartsForRepair' AND schema_id = SCHEMA_ID('dbo'))
 BEGIN
     CREATE TABLE [dbo].[PartsForRepair] (
         [PartItemId] UNIQUEIDENTIFIER NOT NULL DEFAULT (NEWSEQUENTIALID()),
         [BookingId] UNIQUEIDENTIFIER NOT NULL,
+        [InventoryItemId] UNIQUEIDENTIFIER NULL, -- Direct warehouse inventory linkage for stock deduction
         [PartName] NVARCHAR(180) NOT NULL,
         [PartSku] NVARCHAR(60) NULL,
         [MongoCatalogProductId] NVARCHAR(64) NULL, -- Polyglot cross-reference to MongoDB Product Catalog
         [Quantity] INT NOT NULL DEFAULT (1),
         [UnitPrice] DECIMAL(18,4) NOT NULL DEFAULT (0.0000),
+        [UnitPriceCents] AS (CAST(ROUND([UnitPrice] * 100, 0) AS BIGINT)) PERSISTED, -- Historical integer cents freeze
         [TotalPrice] AS (CAST([Quantity] * [UnitPrice] AS DECIMAL(18,4))) PERSISTED,
+        [SnapshotData] NVARCHAR(MAX) NOT NULL DEFAULT ('{}'), -- Frozen immutable part specs and pricing metadata
         [WarrantyMonths] INT NOT NULL DEFAULT (0),
         [SerialNumber] NVARCHAR(100) NULL,
         [CreatedAt] DATETIMEOFFSET NOT NULL DEFAULT (SYSDATETIMEOFFSET()),
         CONSTRAINT [PK_PartsForRepair] PRIMARY KEY CLUSTERED ([PartItemId] ASC),
         CONSTRAINT [FK_PartsForRepair_Bookings] FOREIGN KEY ([BookingId]) REFERENCES [dbo].[ServiceBookings] ([BookingId]) ON DELETE CASCADE,
-        CONSTRAINT [CK_PartsForRepair_Quantity] CHECK ([Quantity] > 0)
+        CONSTRAINT [FK_PartsForRepair_InventoryItems] FOREIGN KEY ([InventoryItemId]) REFERENCES [dbo].[InventoryItems] ([InventoryItemId]),
+        CONSTRAINT [CK_PartsForRepair_Snapshot_IsJson] CHECK (ISJSON([SnapshotData]) = 1),
+        CONSTRAINT [CK_PartsForRepair_Quantity] CHECK ([Quantity] > 0),
+        CONSTRAINT [CK_PartsForRepair_UnitPrice] CHECK ([UnitPrice] >= 0.0000)
     );
 
     CREATE NONCLUSTERED INDEX [IX_PartsForRepair_BookingId] ON [dbo].[PartsForRepair] ([BookingId] ASC);
+    CREATE NONCLUSTERED INDEX [IX_PartsForRepair_InventoryItemId] ON [dbo].[PartsForRepair] ([InventoryItemId] ASC);
 END
 GO

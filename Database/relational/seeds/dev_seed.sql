@@ -114,7 +114,7 @@ BEGIN
 END
 GO
 
--- 5. SEED MASTER SKILLS
+-- 5. SEED MASTER SKILLS & PROVIDER MAPPING
 DECLARE @CatAppliances INT = (SELECT [CategoryId] FROM [dbo].[SkillCategories] WHERE [CategorySlug] = 'electronics-appliances');
 DECLARE @CatElectrical INT = (SELECT [CategoryId] FROM [dbo].[SkillCategories] WHERE [CategorySlug] = 'electrical-wiring');
 
@@ -125,27 +125,18 @@ BEGIN
     (@CatAppliances, N'রেফ্রিজারেটর কুলিং ও গ্যাস লিকেজ মেরামত (Refrigerator Cooling Repair)', 'refrigerator-cooling-repair', 'Compressor testing, filter replacement, concealed cooling loop repair', 1200.0000, 'PER_JOB', 120),
     (@CatElectrical, N'সার্কিট ব্রেকার ও ডিবি বোর্ড ওয়্যারিং (Circuit Breaker & DB Wiring)', 'circuit-breaker-wiring', 'Main DB board installation, RCCB / MCB setup, earthing load testing', 900.0000, 'PER_JOB', 60);
 END
-GO
 
--- 6. MAP PROVIDER SKILLS
 DECLARE @Pro1ProfileId UNIQUEIDENTIFIER = 'A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1';
 DECLARE @SkillAcId INT = (SELECT [SkillId] FROM [dbo].[SkillSets] WHERE [SkillSlug] = 'inverter-ac-servicing');
-DECLARE @SkillFridgeId INT = (SELECT [SkillId] FROM [dbo].[SkillSets] WHERE [SkillSlug] = 'refrigerator-cooling-repair');
 
 IF NOT EXISTS (SELECT 1 FROM [dbo].[ProviderSkills] WHERE [ProfileId] = @Pro1ProfileId AND [SkillId] = @SkillAcId)
 BEGIN
     INSERT INTO [dbo].[ProviderSkills] ([ProfileId], [SkillId], [ExperienceYears], [CustomRate], [IsPrimary], [ApprovalStatus])
     VALUES (@Pro1ProfileId, @SkillAcId, 10, 850.0000, 1, 'APPROVED'); -- Primary Skill
 END
-
-IF NOT EXISTS (SELECT 1 FROM [dbo].[ProviderSkills] WHERE [ProfileId] = @Pro1ProfileId AND [SkillId] = @SkillFridgeId)
-BEGIN
-    INSERT INTO [dbo].[ProviderSkills] ([ProfileId], [SkillId], [ExperienceYears], [CustomRate], [IsPrimary], [ApprovalStatus])
-    VALUES (@Pro1ProfileId, @SkillFridgeId, 8, 1200.0000, 0, 'APPROVED');
-END
 GO
 
--- 7. SEED INVENTORY & SPARE PARTS
+-- 6. SEED INVENTORY & WAREHOUSE STOCK
 DECLARE @InvAcCapId UNIQUEIDENTIFIER = 'C1C1C1C1-C1C1-C1C1-C1C1-C1C1C1C1C1C1';
 DECLARE @InvGasR32Id UNIQUEIDENTIFIER = 'C2C2C2C2-C2C2-C2C2-C2C2-C2C2C2C2C2C2';
 
@@ -154,8 +145,8 @@ BEGIN
     INSERT INTO [dbo].[InventoryItems] 
     ([InventoryItemId], [Sku], [MongoProductId], [ItemName], [WarehouseLocation], [StockOnHand], [StockReserved], [ReorderThreshold], [UnitCost])
     VALUES 
-    (@InvAcCapId, 'CAP-AC-45UF', 'MONGO_PROD_AC_CAP_001', N'SHIZUKI 45uF AC Dual Run Capacitor', 'CENTRAL-DHAKA-WH01', 50, 2, 10, 450.0000),
-    (@InvGasR32Id, 'GAS-R32-CYL', 'MONGO_PROD_R32_GAS_002', N'Honeywell Genetron R32 Refrigerant Gas (Canister)', 'CENTRAL-DHAKA-WH01', 30, 1, 5, 1800.0000);
+    (@InvAcCapId, 'CAP-AC-45UF', 'MONGO_PROD_AC_CAP_001', N'SHIZUKI 45uF AC Dual Run Capacitor', 'CENTRAL-DHAKA-WH01', 50, 0, 10, 450.0000),
+    (@InvGasR32Id, 'GAS-R32-CYL', 'MONGO_PROD_R32_GAS_002', N'Honeywell Genetron R32 Refrigerant Gas (Canister)', 'CENTRAL-DHAKA-WH01', 30, 0, 5, 1800.0000);
 
     INSERT INTO [dbo].[InventoryLedger]
     ([InventoryItemId], [TransactionType], [QuantityChange], [ReferenceType], [ReferenceId], [RunningBalanceOnHand], [RunningBalanceReserved], [Notes])
@@ -165,7 +156,80 @@ BEGIN
 END
 GO
 
--- 8. SEED PROVIDER BADGES
+-- 7. SEED UNIFIED BILLABLE ENTITIES & SERVICE BOOKINGS WITH WAREHOUSE REPAIR DEDUCTION
+DECLARE @Cust1UserId UNIQUEIDENTIFIER = '44444444-4444-4444-4444-444444444444';
+DECLARE @Pro1ProfileId UNIQUEIDENTIFIER = 'A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1';
+DECLARE @SkillAcId INT = (SELECT [SkillId] FROM [dbo].[SkillSets] WHERE [SkillSlug] = 'inverter-ac-servicing');
+DECLARE @InvAcCapId UNIQUEIDENTIFIER = 'C1C1C1C1-C1C1-C1C1-C1C1-C1C1C1C1C1C1';
+
+DECLARE @BillableBookingId UNIQUEIDENTIFIER = 'D1D1D1D1-D1D1-D1D1-D1D1-D1D1D1D1D1D1';
+DECLARE @BookingId UNIQUEIDENTIFIER = 'E1E1E1E1-E1E1-E1E1-E1E1-E1E1E1E1E1E1';
+
+IF NOT EXISTS (SELECT 1 FROM [dbo].[BillableEntities] WHERE [BillableEntityId] = @BillableBookingId)
+BEGIN
+    -- 1. Create Billable Entity for Service Booking
+    INSERT INTO [dbo].[BillableEntities]
+    ([BillableEntityId], [EntityType], [ReferenceNumber], [CustomerId], [TotalAmount], [BillingStatus], [Notes])
+    VALUES
+    (@BillableBookingId, 'SERVICE_BOOKING', 'BK-202610-A9F2', @Cust1UserId, 1500.0000, 'PAID', 'Air conditioner maintenance & capacitor replacement');
+
+    -- 2. Create Service Booking binding to Billable Entity
+    INSERT INTO [dbo].[ServiceBookings]
+    ([BookingId], [BillableEntityId], [BookingReference], [CustomerId], [ProviderId], [SkillId], [ScheduledAt], [ServiceAddress], [Status], [LaborCost], [PartsTotalCost], [TotalAmount], [CommissionFee], [ProviderPayoutAmount])
+    VALUES
+    (@BookingId, @BillableBookingId, 'BK-202610-A9F2', @Cust1UserId, @Pro1ProfileId, @SkillAcId, SYSDATETIMEOFFSET(), N'House 12, Road 4, Gulshan-2, Dhaka', 'COMPLETED', 850.0000, 650.0000, 1500.0000, 150.0000, 1350.0000);
+
+    -- 3. Log Consumed Part linked directly to warehouse InventoryItems with Price Freeze
+    INSERT INTO [dbo].[PartsForRepair]
+    ([BookingId], [InventoryItemId], [PartName], [PartSku], [MongoCatalogProductId], [Quantity], [UnitPrice], [SnapshotData], [WarrantyMonths])
+    VALUES
+    (@BookingId, @InvAcCapId, N'SHIZUKI 45uF AC Dual Run Capacitor', 'CAP-AC-45UF', 'MONGO_PROD_AC_CAP_001', 1, 650.0000, 
+     N'{"sku":"CAP-AC-45UF","brand":"SHIZUKI","capacitance":"45uF","voltage":"450VAC","unitPrice":650.00}', 6);
+
+    -- 4. Deduct warehouse stock and write debit transaction to InventoryLedger
+    UPDATE [dbo].[InventoryItems] 
+    SET [StockOnHand] = [StockOnHand] - 1 
+    WHERE [InventoryItemId] = @InvAcCapId;
+
+    INSERT INTO [dbo].[InventoryLedger]
+    ([InventoryItemId], [TransactionType], [QuantityChange], [ReferenceType], [ReferenceId], [RunningBalanceOnHand], [RunningBalanceReserved], [Notes])
+    VALUES
+    (@InvAcCapId, 'REPAIR_CONSUMED', -1, 'SERVICE_BOOKING', CAST(@BookingId AS NVARCHAR(64)), 49, 0, 'Consumed on-site during AC service booking BK-202610-A9F2');
+
+    -- 5. Create Invoice linked to BillableEntity
+    INSERT INTO [dbo].[Invoices]
+    ([InvoiceNumber], [BillableEntityId], [CustomerId], [GrossAmount], [TaxOrVatAmount], [DiscountAmount], [NetAmount], [InvoiceStatus], [DueDate], [PaidAt])
+    VALUES
+    ('INV-202610-0001', @BillableBookingId, @Cust1UserId, 1500.0000, 0.0000, 0.0000, 1500.0000, 'PAID', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+
+    -- 6. Create Payment Transaction linked to BillableEntity
+    INSERT INTO [dbo].[PaymentTransactions]
+    ([TransactionReference], [BillableEntityId], [CustomerId], [PaymentMethod], [Currency], [GrossAmount], [PlatformCommission], [NetAmountPayable], [PaymentStatus], [SettledAt])
+    VALUES
+    ('TXN-BKASH-892301', @BillableBookingId, @Cust1UserId, 'BKASH', 'BDT', 1500.0000, 150.0000, 1350.0000, 'SUCCESS', SYSDATETIMEOFFSET());
+
+    -- 7. Add Verified Review & Rating
+    INSERT INTO [dbo].[ReviewsAndRatings]
+    ([BookingId], [CustomerId], [ProviderId], [Rating], [FeedbackText], [ProviderResponse])
+    VALUES
+    (@BookingId, @Cust1UserId, @Pro1ProfileId, 5, N'দারুণ সার্ভিস! দ্রুত সময়ের মধ্যে এসি চেক করে ক্যাপাসিটর চেঞ্জ করে দিয়েছেন।', N'ধন্যবাদ আপা, ভালো লাগলে পরবর্তীতে আবার জানাবেন।');
+END
+GO
+
+-- 8. SEED OUTBOX MESSAGES (CDC Event Publication for Elasticsearch Sync)
+IF NOT EXISTS (SELECT 1 FROM [dbo].[OutboxMessages] WHERE [Type] = 'ProviderLocationUpdated')
+BEGIN
+    INSERT INTO [dbo].[OutboxMessages]
+    ([AggregateType], [AggregateId], [Type], [Payload], [CreatedAtUtc])
+    VALUES
+    ('ProviderLocation', 'A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1', 'ProviderLocationUpdated', 
+     N'{"profileId":"A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1","fullName":"Rafiqul Islam","latitude":23.804100,"longitude":90.366500,"serviceRadiusKm":12.5,"skills":["inverter-ac-servicing"],"averageRating":4.90,"isAvailable":true}', SYSDATETIMEOFFSET()),
+    ('ServiceBooking', 'E1E1E1E1-E1E1-E1E1-E1E1-E1E1E1E1E1E1', 'BookingCompleted',
+     N'{"bookingId":"E1E1E1E1-E1E1-E1E1-E1E1-E1E1E1E1E1E1","referenceNumber":"BK-202610-A9F2","totalAmount":1500.00,"providerId":"A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1"}', SYSDATETIMEOFFSET());
+END
+GO
+
+-- 9. SEED PROVIDER BADGES
 DECLARE @Pro1ProfileId UNIQUEIDENTIFIER = 'A1A1A1A1-A1A1-A1A1-A1A1-A1A1A1A1A1A1';
 IF NOT EXISTS (SELECT 1 FROM [dbo].[ProviderBadges] WHERE [ProfileId] = @Pro1ProfileId AND [BadgeType] = 'SUPER_DOKKHO')
 BEGIN
@@ -178,5 +242,5 @@ GO
 
 COMMIT TRANSACTION;
 GO
-PRINT 'SkillCommerceDb seed deployment executed successfully.';
+PRINT 'SkillCommerceDb production seed deployment executed successfully.';
 GO

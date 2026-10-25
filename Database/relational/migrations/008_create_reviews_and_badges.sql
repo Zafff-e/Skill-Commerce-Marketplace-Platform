@@ -1,5 +1,5 @@
 -- ============================================================================
--- Migration: 007_create_reviews_and_badges.sql
+-- Migration: 008_create_reviews_and_badges.sql
 -- Module: Verified Reviews, Customer Feedback & Provider Gamification Badges
 -- Platform: SkillCommerce / Dokkho Lok Khuji (দক্ষ লোক খুঁজি)
 -- Target Database: Microsoft SQL Server 2019+ / 2022

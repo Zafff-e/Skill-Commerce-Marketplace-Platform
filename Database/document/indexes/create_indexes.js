@@ -9,6 +9,7 @@ const catalogDb = db.getSiblingDB("skillcommerce_catalog");
 print("Creating indexes on collection: products...");
 catalogDb.products.createIndex({ "sku": 1 }, { unique: true, name: "uq_products_sku" });
 catalogDb.products.createIndex({ "slug": 1 }, { unique: true, name: "uq_products_slug" });
+catalogDb.products.createIndex({ "variants.variantSku": 1 }, { name: "ix_products_variants_sku", sparse: true });
 catalogDb.products.createIndex({ "category": 1, "isActive": 1, "price.amount": 1 }, { name: "ix_products_cat_active_price" });
 catalogDb.products.createIndex({ "isPreOrder": 1, "isActive": 1 }, { name: "ix_products_preorder_active" });
 catalogDb.products.createIndex(
@@ -30,6 +31,7 @@ catalogDb.products.createIndex(
 
 print("Creating indexes on collection: provider_portfolios...");
 catalogDb.provider_portfolios.createIndex({ "providerId": 1 }, { unique: true, name: "uq_portfolios_provider_id" });
+catalogDb.provider_portfolios.createIndex({ "serviceLocationGeo": "2dsphere" }, { name: "geo_portfolios_location", sparse: true });
 
 print("Creating indexes on collection: reviews...");
 catalogDb.reviews.createIndex({ "bookingId": 1 }, { unique: true, name: "uq_reviews_booking_id" });

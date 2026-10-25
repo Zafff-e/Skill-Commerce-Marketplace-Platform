@@ -12,18 +12,19 @@ flowchart TD
     Client["Clients (React Booking App / Angular Admin / MAUI Mobile)"] --> API["ASP.NET Core Web API Gateway"]
     
     subgraph Polyglot_Database_Layer ["SkillCommerce Enterprise Data Layer"]
-        SQL[("SQL Server 2022 (ACID Core)<br/>- Identity & Roles<br/>- Service Bookings<br/>- Orders & Invoices<br/>- Double-Entry Inventory Ledger<br/>- Escrow Payments")]
-        Mongo[("MongoDB 7.0 (Document Catalog)<br/>- Dynamic Technical Specs<br/>- Variant Attributes<br/>- Technician Portfolios<br/>- Verified Media")]
+        SQL[("SQL Server 2022 (ACID Core)<br/>- Identity & Roles<br/>- BillableEntities (Polymorphic Contract)<br/>- Service Bookings & Consumed Parts<br/>- Orders & Invoices (Zero Nullable FKs)<br/>- Double-Entry Inventory Ledger<br/>- OutboxMessages (Async CDC Relay)")]
+        Mongo[("MongoDB 7.0 (Document Catalog)<br/>- Dynamic Technical Specs<br/>- Variant Attributes<br/>- Technician Portfolios & Media")]
         Redis[("Redis 7.2 (In-Memory Cache)<br/>- Guest & User Carts<br/>- Atomic Lua Stock Reservation<br/>- JWT Blacklists & Rate Limiting<br/>- Live Geo Tracking")]
-        ES[("Elasticsearch 8.13 (Search Engine)<br/>- Bilingual Autocomplete<br/>- Multi-faceted Product Search<br/>- Haversine Geo Discovery")]
+        ES[("Elasticsearch 8.13 (Search Engine)<br/>- Bilingual Autocomplete<br/>- Multi-faceted Product Search<br/>- Haversine Geo-radial Discovery")]
     end
     
-    API -->|Strict ACID Transactions| SQL
+    API -->|Strict ACID Transactions + Outbox| SQL
     API -->|JSON Documents & Portfolios| Mongo
     API -->|Sub-millisecond State & Locks| Redis
     API -->|Full-Text & Geospatial Queries| ES
     
-    SQL -.->|Domain Events (Outbox/Kafka)| ES
+    SQL -.->|Outbox Messages -> Kafka| ES
+    Mongo -.->|Change Streams| ES
 ```
 
 ---
@@ -32,7 +33,7 @@ flowchart TD
 
 | Engine | Port | Primary Responsibility | Data Guarantee |
 | :--- | :--- | :--- | :--- |
-| **Microsoft SQL Server 2022** | `1433` | Financial ledgers, service bookings, orders, users, role permissions, provider NID verification. | Strict ACID, Serialized / Snapshot Isolation, Optimistic Concurrency (`Version INT`). |
+| **Microsoft SQL Server 2022** | `1433` | Financial ledgers, billable contracts, service bookings, orders, users, role permissions, provider NID verification, and transactional outbox. | Strict ACID, Serialized / Snapshot Isolation, Optimistic Concurrency (`Version INT`). |
 | **MongoDB 7.0** | `27017` | Hardware spare parts catalog, dynamic electrical/mechanical specifications, rich media portfolios. | Document schema validation (`$jsonSchema`), flexible polymorphism. |
 | **Redis 7.2** | `6379` | Ephemeral guest/user shopping carts, atomic stock reservation leases, sliding-window rate limiters. | Sub-millisecond latency, in-memory with AOF persistence. |
 | **Elasticsearch 8.13** | `9200` | Full-text catalog search, edge-ngram autocomplete, geospatial technician radius search. | Near real-time inverted index & geo-distance scoring. |
@@ -43,18 +44,21 @@ flowchart TD
 
 ```
 DataBase/
-├── docker-compose.yml              # Local multi-container environment
+├── docker-compose.yml              # Local multi-container environment (SQL Server, Mongo, Redis, ES)
 ├── README.md                       # Setup instructions & connection strings
+├── Diagram.md                      # Mermaid ERD & Dual-Stream CDC Architecture
 │
 ├── relational/                     # Microsoft SQL Server (Transactional Core)
 │   ├── migrations/                 # Idempotent versioned DDL files
 │   │   ├── 001_create_identity_and_roles.sql
 │   │   ├── 002_create_skills_taxonomy.sql
-│   │   ├── 003_create_bookings_and_parts.sql
-│   │   ├── 004_create_orders_and_invoices.sql
-│   │   ├── 005_create_inventory_ledger.sql
-│   │   ├── 006_create_payments_and_settlement.sql
-│   │   └── 007_create_reviews_and_badges.sql
+│   │   ├── 003_create_inventory_ledger.sql
+│   │   ├── 004_create_billable_entities.sql
+│   │   ├── 005_create_bookings_and_parts.sql
+│   │   ├── 006_create_orders_and_invoices.sql
+│   │   ├── 007_create_payments_and_settlement.sql
+│   │   ├── 008_create_reviews_and_badges.sql
+│   │   └── 009_create_outbox_messages.sql
 │   └── seeds/                      # Localized development baseline data
 │       └── dev_seed.sql
 │
@@ -65,7 +69,8 @@ DataBase/
 │   │   └── provider_portfolios.validation.json
 │   ├── indexes/                    # Compound, text, and unique index definitions
 │   │   └── create_indexes.js
-│   └── seeds/                      # Product and spare parts catalog seeds
+│   └── seeds/                      # Product variants & portfolio seeds
+│       ├── initial_documents.json
 │       └── initial_products.json
 │
 ├── cache/                          # Redis (Carts, Rate Limits, Locks)
@@ -108,7 +113,7 @@ http://localhost:9200
 ## 5. Quickstart & Initialization Runbook
 
 ### Step 1: Boot All Services via Docker Compose
-From the `DataBase/` folder:
+From the `Database/` folder:
 ```bash
 docker compose up -d
 ```
@@ -119,7 +124,7 @@ docker compose ps
 ```
 
 ### Step 2: Apply SQL Server Migrations
-Execute the migrations in order:
+Execute the migrations in sequential order:
 ```powershell
 $saPass = "SkillCommerce@Pass2026!"
 $scripts = Get-ChildItem -Path ./relational/migrations/*.sql | Sort-Object Name
@@ -159,6 +164,7 @@ curl -X PUT "http://localhost:9200/providers_geo" -H "Content-Type: application/
 ## 6. Enterprise Rules for Polyglot Integration
 
 1. **Clean Foreign Keys:** Never attempt cross-database foreign key constraints. Use immutable logical IDs (e.g., `MongoProductId` stored as string UUID/SKU in SQL Server `OrderItems` and `PartsForRepair`).
-2. **Double-Entry Stock Audit:** Never update inventory with bare `UPDATE items SET stock = stock - 1`. Every stock modification must append an immutable ledger line to `InventoryLedger` with its corresponding `TransactionType`.
-3. **Optimistic Locking:** All concurrent operations on `Orders`, `ServiceBookings`, and `InventoryItems` require the `Version` check (`WHERE Version = @OriginalVersion`).
-4. **Exact Monetary Storage:** All financial amounts are stored as `DECIMAL(18,4)`. Floating point math is strictly prohibited in monetary paths.
+2. **Unified Billable Contract:** Invoices and PaymentTransactions link strictly to `BillableEntities(BillableEntityId)`, avoiding mutually exclusive nullable foreign keys between orders and service bookings.
+3. **Double-Entry Stock Audit:** Never update inventory with bare `UPDATE items SET stock = stock - 1`. Every stock modification (including repair consumption) must append an immutable ledger line to `InventoryLedger` with its corresponding `TransactionType`.
+4. **Historical Price Freezes:** `OrderItems` and `PartsForRepair` compute and persist `UnitPriceCents` alongside frozen `SnapshotData` JSON blobs, preserving historical pricing integrity regardless of future catalog changes.
+5. **Transactional Outbox:** Write domain events to `OutboxMessages` within the same ACID transaction to guarantee reliable downstream streaming to Kafka and Elasticsearch.

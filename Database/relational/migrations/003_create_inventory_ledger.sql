@@ -1,5 +1,5 @@
 -- ============================================================================
--- Migration: 005_create_inventory_ledger.sql
+-- Migration: 003_create_inventory_ledger.sql
 -- Module: Double-Entry Inventory Ledger & Stock Balances
 -- Platform: SkillCommerce / Dokkho Lok Khuji (দক্ষ লোক খুঁজি)
 -- Target Database: Microsoft SQL Server 2019+ / 2022

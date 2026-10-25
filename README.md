@@ -97,12 +97,12 @@ Skill-Based_E-Commerce_Platform-Project/
 │   ├── Diagram.md                            # Entity-Relationship Diagrams & Polyglot Reference Matrix
 │   ├── SkillCommerce_Schema_and_Seed.sql     # Standalone legacy all-in-one T-SQL DDL & Seed Data Script
 │   ├── relational/                           # SQL Server 2022 (ACID Core)
-│   │   ├── migrations/                       # 001 to 007 modular versioned DDL scripts
+│   │   ├── migrations/                       # 001 to 009 modular versioned DDL scripts
 │   │   └── seeds/                            # dev_seed.sql localized baseline test data
 │   ├── document/                             # MongoDB 7.0 (Product Catalog & Portfolios)
 │   │   ├── collections/                      # Strict JSON Schema validation definitions
 │   │   ├── indexes/                          # Compound, text & unique index scripts
-│   │   └── seeds/                            # Initial hardware components & pre-order catalog
+│   │   └── seeds/                            # initial_documents.json & initial_products.json
 │   ├── cache/                                # Redis 7.2 (Carts, Rate Limits & Locks)
 │   │   ├── key-registry.md                   # Key namespaces, TTL policies & eviction
 │   │   └── scripts/                          # Atomic Lua scripts (reserve, release, rate_limit)
