@@ -92,22 +92,42 @@ erDiagram
 ```
 Skill-Based_E-Commerce_Platform-Project/
 ├── Database/
-│   └── SkillCommerce_Schema_and_Seed.sql     # Complete T-SQL DDL & Seed Data Script
+│   ├── docker-compose.yml                    # Multi-container orchestration (SQL Server, MongoDB, Redis, ES)
+│   ├── README.md                             # Setup guide, connection strings & runbooks
+│   ├── Diagram.md                            # Entity-Relationship Diagrams & Polyglot Reference Matrix
+│   ├── SkillCommerce_Schema_and_Seed.sql     # Standalone legacy all-in-one T-SQL DDL & Seed Data Script
+│   ├── relational/                           # SQL Server 2022 (ACID Core)
+│   │   ├── migrations/                       # 001 to 007 modular versioned DDL scripts
+│   │   └── seeds/                            # dev_seed.sql localized baseline test data
+│   ├── document/                             # MongoDB 7.0 (Product Catalog & Portfolios)
+│   │   ├── collections/                      # Strict JSON Schema validation definitions
+│   │   ├── indexes/                          # Compound, text & unique index scripts
+│   │   └── seeds/                            # Initial hardware components & pre-order catalog
+│   ├── cache/                                # Redis 7.2 (Carts, Rate Limits & Locks)
+│   │   ├── key-registry.md                   # Key namespaces, TTL policies & eviction
+│   │   └── scripts/                          # Atomic Lua scripts (reserve, release, rate_limit)
+│   └── search/                               # Elasticsearch 8.13 (Search & Discovery)
+│       ├── mappings/                         # Autocomplete & geo-distance index mappings
+│       └── pipelines/                        # Data ingest & sanitization pipelines
 ├── docs/
 │   └── DATABASE_ARCHITECTURE_SPEC.md         # 3NF Normalization Analysis & Field Spec
-├── .gitignore                                 # Hardened Git exclusions
-└── README.md                                  # Executive Capstone Documentation
+├── .gitignore                                # Hardened Git exclusions
+└── README.md                                 # Executive Capstone Documentation
 ```
 
 ---
 
-## 🚀 Setting Up the Database
+## 🚀 Setting Up the Database Layer
 
-### Prerequisites
-- Microsoft SQL Server 2019+ or LocalDB
-- SQL Server Management Studio (SSMS), Azure Data Studio, or `sqlcmd`
+### Option 1: Multi-Container Polyglot Environment (Recommended)
+Navigate to the `Database/` directory and boot all data stores with Docker Compose:
+```bash
+cd Database
+docker compose up -d
+```
 
-### Execute Script
+### Option 2: Standalone SQL Server Script
+If running purely against a local SQL Server instance or LocalDB:
 ```bash
 sqlcmd -S "(localdb)\MSSQLLocalDB" -i Database/SkillCommerce_Schema_and_Seed.sql
 ```
