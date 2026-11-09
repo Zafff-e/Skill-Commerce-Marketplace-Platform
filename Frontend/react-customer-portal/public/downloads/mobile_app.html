@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillCommerce (দক্ষ লোক খুঁজি) - Mobile App</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Hind Siliguri', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0b1120;
+      color: #1e293b;
+    }
+    .phone-shadow {
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 12px #1e293b, 0 0 0 14px #334155;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.4); opacity: 0.2; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-radar {
+      animation: pulse-ring 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-3 select-none">
+
+  <!-- Desktop Header Controls & Real-Time Status -->
+  <div class="max-w-md w-full mb-3 flex items-center justify-between text-white px-2">
+    <div class="flex items-center space-x-2">
+      <span class="text-2xl">🛠️</span>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-sm font-bold text-emerald-400">SkillCommerce App</h1>
+          <span id="api-status-badge" class="px-2 py-0.5 text-[10px] font-semibold bg-emerald-950 text-emerald-300 border border-emerald-600 rounded-full flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SQL DB Live
+          </span>
+        </div>
+        <p class="text-[11px] text-slate-400">Dokkho Lok Khuji / দক্ষ লোক খুঁজি</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-2">
+      <button onclick="toggleLang()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-full border border-slate-700 transition">
+        <span id="lang-btn-text">🌐 বাংলা / EN</span>
+      </button>
+      <button onclick="toggleRole()" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-xs font-bold rounded-full shadow transition flex items-center gap-1">
+        <span id="top-role-btn-text">🔄 মোড বদলান</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Role Status Indicator Bar (Fix Issue 6) -->
+  <div class="max-w-md w-full mb-2 px-2 flex items-center justify-between">
+    <div id="role-status-banner" class="px-3 py-1 text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-sm bg-emerald-900/60 border border-emerald-500/40 text-emerald-200">
+      <span id="role-status-icon">👤</span>
+      <span id="role-status-text">বর্তমান প্যানেল: গ্রাহক / সেবা গ্রহণকারী (Customer)</span>
+    </div>
+    <span class="text-[11px] text-slate-400">v1.2.0 Complete</span>
+  </div>
+
+  <!-- Mobile Device Simulation Frame -->
+  <div class="relative w-[390px] h-[780px] bg-white rounded-[44px] overflow-hidden phone-shadow flex flex-col border border-slate-700">
+    
+    <!-- Phone Notch & Status Bar -->
+    <div class="h-11 bg-white flex items-center justify-between px-7 pt-2 select-none z-40">
+      <span class="text-xs font-bold text-slate-800">9:41</span>
+      <div class="w-28 h-4 bg-slate-900 rounded-full"></div>
+      <div class="flex items-center space-x-1.5 text-slate-800 text-xs">
+        <span>📶</span>
+        <span>5G</span>
+        <span>🔋</span>
+      </div>
+    </div>
+
+    <!-- Active Screen Container -->
+    <div id="screen-container" class="flex-1 overflow-y-auto custom-scrollbar relative flex flex-col bg-[#F8F9FA]">
+      <!-- Dynamically Injected Screen -->
+    </div>
+
+    <!-- Mobile Home Indicator -->
+    <div class="h-5 bg-white flex items-center justify-center select-none z-40">
+      <div class="w-32 h-1 bg-slate-300 rounded-full"></div>
+    </div>
+
+  </div>
+
+  <!-- Hidden Photo File Input for Real Photo Upload -->
+  <input type="file" id="photo-file-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+
+  <!-- App State and Interactive JavaScript -->
+  <script>
+    // State
+    let currentLang = 'bn'; // 'bn' or 'en'
+    let currentRole = 'seeker'; // 'seeker' (Customer/Hirer) or 'provider' (Technician/Worker)
+    let currentScreen = 'catalog'; // 'onboarding', 'catalog', 'map', 'tracking', 'provider_home'
+    let selectedCategoryId = 'all'; // Fix Issue 2 & 7
+    let isUrgent = false; // Emergency flag
+    let isProviderOnline = true;
+    let trackingStatusIndex = 1; // 0: Accepted, 1: OnTheWay, 2: Arrived, 3: InProgress, 4: Completed
+    let selectedPaymentMethod = 'cash'; // 'cash', 'bkash', 'nagad', 'card' (Fix Issue 4)
+    let bkashPhoneNumber = '01711223344';
+    
+    // Voice & Image States (Fix Issue 3)
+    let isVoiceRecording = false;
+    let voiceDuration = 0;
+    let hasVoiceRecorded = false;
+    let isVoicePlaying = false;
+    let voiceTimer = null;
+    let voicePlayTimer = null;
+    let voiceAudioSynth = null;
+    let attachedPhotoData = null; // DataURL or null
+    let attachedPhotoName = '';
+    let showAiChatModal = false;
+
+    // Radar Map Selected Provider (Fix Issue 1)
+    let selectedProviderId = 1; // 1: Rafiqul, 2: Tanvir, 3: Salam, 4: Kabir
+
+    const providers = [
+      {
+        id: 1,
+        nameBn: 'মোঃ রফিকুল ইসলাম (Rafiqul)',
+        nameEn: 'Md. Rafiqul Islam (Rafiqul)',
+        skillBn: 'এসি ও রেফ্রিজারেটর স্পেশালিস্ট (১০ বছর)',
+        skillEn: 'AC & Inverter Cooling Specialist (10 yrs)',
+        rating: 4.9,
+        reviewsCount: 142,
+        distanceKm: 0.8,
+        baseRate: 650,
+        avatar: 'assets/avatars/ac_technician.jpg',
+        phone: '+8801711223344',
+        badgeBn: 'সুপার দক্ষ',
+        badgeEn: 'Super Dokkho',
+        coords: { x: 120, y: 160 }
+      },
+      {
+        id: 2,
+        nameBn: 'তানভীর রহমান (Tanvir)',
+        nameEn: 'Tanvir Rahman (Tanvir)',
+        skillBn: 'সার্টিফাইড ইলেকট্রিশিয়ান ও ওয়্যারিং (৭ বছর)',
+        skillEn: 'Certified Master Electrician (7 yrs)',
+        rating: 4.85,
+        reviewsCount: 89,
+        distanceKm: 1.2,
+        baseRate: 450,
+        avatar: 'assets/avatars/electrician.jpg',
+        phone: '+8801722334455',
+        badgeBn: 'ভেরিফাইড',
+        badgeEn: 'Verified',
+        coords: { x: 270, y: 220 }
+      },
+      {
+        id: 3,
+        nameBn: 'আব্দুস সালাম (Salam)',
+        nameEn: 'Abdus Salam (Salam)',
+        skillBn: 'মাস্টার প্লাম্বার ও পাইপ ফিটিংস (১২ বছর)',
+        skillEn: 'Master Plumber & Pipe Fitter (12 yrs)',
+        rating: 4.75,
+        reviewsCount: 64,
+        distanceKm: 1.5,
+        baseRate: 400,
+        avatar: 'assets/avatars/plumber.jpg',
+        phone: '+8801733445566',
+        badgeBn: 'টপ রেটেড',
+        badgeEn: 'Top Rated',
+        coords: { x: 110, y: 380 }
+      },
+      {
+        id: 4,
+        nameBn: 'কবির হোসেন (Kabir)',
+        nameEn: 'Kabir Hossain (Kabir)',
+        skillBn: 'হোম অ্যাপ্লায়েন্স ও ওয়াশিং মেশিন (৫ বছর)',
+        skillEn: 'Appliance & Washing Machine (5 yrs)',
+        rating: 4.9,
+        reviewsCount: 110,
+        distanceKm: 1.9,
+        baseRate: 500,
+        avatar: 'assets/avatars/technician_appliance.jpg',
+        phone: '+8801744556677',
+        badgeBn: 'দ্রুত সাড়াদানকারী',
+        badgeEn: 'Fast Responder',
+        coords: { x: 290, y: 390 }
+      }
+    ];
+
+    // Bidding / Custom Job State (Fix Issue 5)
+    let customJobs = [
+      {
+        id: 501,
+        titleBn: 'পুরো ৩ রুমের ফ্ল্যাট ওয়্যারিং ও মেইন ডিবি বোর্ড মেরামত',
+        titleEn: 'Complete 3-Room Apartment Wiring & Main DB Board Repair',
+        budget: 3500,
+        locationBn: 'বনানী রোড ১১, ঢাকা',
+        locationEn: 'Road 11, Banani, Dhaka',
+        descriptionBn: '৩ রুমের ফ্ল্যাটে শর্ট সার্কিট ও ট্রিপিং সমস্যা। নতুন সার্কিট ব্রেকার ও ওয়্যারিং চেক লাগবে।',
+        descriptionEn: 'Short circuit and frequent tripping. Need new MCB install & wiring diagnostic.',
+        proposals: [
+          {
+            id: 1,
+            providerName: 'মোঃ রফিকুল ইসলাম',
+            providerAvatar: 'assets/avatars/ac_technician.jpg',
+            rating: '★ 4.9 (48)',
+            quotedLabor: 3200,
+            noteBn: 'আমি প্রয়োজনীয় টুলস নিয়ে রবিবারে কাজ শুরু করতে পারব। ১ মাসের সার্ভিস ওয়ারেন্টি থাকবে।',
+            noteEn: 'Can start this Sunday with full equipment. 1 month workmanship warranty included.'
+          },
+          {
+            id: 2,
+            providerName: 'তানভীর রহমান',
+            providerAvatar: 'assets/avatars/electrician.jpg',
+            rating: '★ 4.85 (32)',
+            quotedLabor: 3400,
+            noteBn: 'বিআরবি ক্যাবল ও প্রিমিয়াম সুইচ ফিটিংস এর বিশেষ অভিজ্ঞতা আছে।',
+            noteEn: 'Specialist in BRB cables & premium modular switch fittings.'
+          },
+          {
+            id: 3,
+            providerName: 'আব্দুস সালাম',
+            providerAvatar: 'assets/avatars/plumber.jpg',
+            rating: '★ 4.75 (64)',
+            quotedLabor: 3100,
+            noteBn: 'দ্রুততম সময়ে এসে কাজ শেষ করে দিতে পারব।',
+            noteEn: 'Can arrive quickly and complete within 3 hours.'
+          }
+        ]
+      }
+    ];
+
+    let activeJob = {
+      bookingId: 1001,
+      customerName: 'জাফির হাসান (Zafir Hasan)',
+      customerPhone: '+8801700001122',
+      providerName: 'মোঃ রফিকুল ইসলাম (Rafiqul)',
+      providerPhone: '+8801711223344',
+      providerAvatar: 'assets/avatars/ac_technician.jpg',
+      serviceName: 'এসি সার্ভিসিং ও গ্যাস রিফিল (AC Servicing)',
+      address: 'বাড়ি ১২, রোড ৫, বনানী, ঢাকা',
+      status: 'OnTheWay',
+      laborAmount: 650,
+      urgencyFee: 300,
+      platformFee: 95,
+      materialsAmount: 450,
+      paymentMethod: 'Cash',
+      parts: [
+        { name: 'ক্যাপাসিটর (45uF AC Capacitor)', qty: 1, price: 450 }
+      ]
+    };
+
+    // Bilingual Categories (Fix Issue 2 & 7)
+    const categories = [
+      { id: 'all', nameBn: 'সব সেবা', nameEn: 'All Services', icon: '▦' },
+      { id: 'ac', nameBn: 'এসি ও রেফ্রিজারেটর', nameEn: 'AC & Cooling', icon: '❄️' },
+      { id: 'electric', nameBn: 'ইলেকট্রিক্যাল ও ওয়্যারিং', nameEn: 'Electrical', icon: '⚡' },
+      { id: 'plumbing', nameBn: 'প্লাম্বিং ও পাইপ', nameEn: 'Plumbing', icon: '🔧' },
+      { id: 'carpenter', nameBn: 'কাঠমিস্ত্রি ও আসবাব', nameEn: 'Carpentry', icon: '🪚' },
+      { id: 'painting', nameBn: 'রং মিস্ত্রি ও ডেকোর', nameEn: 'Painting', icon: '🎨' },
+      { id: 'cleaning', nameBn: 'ডিপ ক্লিনিং ও পেস্ট', nameEn: 'Cleaning', icon: '🧹' },
+      { id: 'cctv', nameBn: 'সিসিটিভি ও সিকিউরিটি', nameEn: 'CCTV Security', icon: '📹' }
+    ];
+
+    // Services Catalog (Bilingual)
+    const services = [
+      { id: 1, categoryId: 'ac', nameBn: 'এসি সার্ভিসিং ও গ্যাস রিফিল', nameEn: 'AC Servicing & Gas Refill', price: 650, avatar: 'assets/avatars/ac_technician.jpg' },
+      { id: 2, categoryId: 'electric', nameBn: 'সার্কিট ব্রেকার ও ওয়্যারিং মেরামত', nameEn: 'Circuit Breaker & Wiring Repair', price: 400, avatar: 'assets/avatars/electrician.jpg' },
+      { id: 3, categoryId: 'plumbing', nameBn: 'পানির পাইপ লিক ও মোটর মেরামত', nameEn: 'Pipe Leak & Water Motor Repair', price: 450, avatar: 'assets/avatars/plumber.jpg' },
+      { id: 4, categoryId: 'ac', nameBn: 'ফ্রিজ ও ওয়াশিং মেশিন সার্ভিস', nameEn: 'Refrigerator & Washing Machine', price: 500, avatar: 'assets/avatars/technician_appliance.jpg' },
+      { id: 5, categoryId: 'carpenter', nameBn: 'দরজা-জানালা ও খাট তৈরি/মেরামত', nameEn: 'Door, Window & Furniture Repair', price: 400, avatar: 'assets/avatars/carpenter.jpg' },
+      { id: 6, categoryId: 'painting', nameBn: 'ওয়াল পুটিং ও পেইন্টিং সার্ভিস', nameEn: 'Wall Putty & Color Painting', price: 350, avatar: 'assets/avatars/painter.jpg' },
+      { id: 7, categoryId: 'cleaning', nameBn: 'বাথরুম ও কিচেন ডিপ ক্লিনিং', nameEn: 'Bathroom & Kitchen Deep Clean', price: 800, avatar: 'assets/avatars/cleaner.jpg' },
+      { id: 8, categoryId: 'cleaning', nameBn: 'ছাড়পোকা ও তেলাপোকা পেস্ট কন্ট্রোল', nameEn: 'Bedbug & Cockroach Pest Control', price: 600, avatar: 'assets/avatars/pest_control.jpg' },
+      { id: 9, categoryId: 'cctv', nameBn: 'সিসিটিভি ক্যামেরা ও ডিভিআর সেটআপ', nameEn: 'CCTV Camera & DVR Installation', price: 550, avatar: 'assets/avatars/cctv_technician.jpg' },
+      { id: 10, categoryId: 'carpenter', nameBn: 'বাসা বদল ও আসবাব স্থানান্তর', nameEn: 'Packer, Mover & Heavy Shifting', price: 1200, avatar: 'assets/avatars/packer_mover.jpg' },
+    ];
+
+    const dict = {
+      bn: {
+        appName: 'দক্ষ লোক খুঁজি',
+        tagline: 'আপনার এলাকায়, বিশ্বস্ত অভিজ্ঞ লোক',
+        customerPanelTitle: 'গ্রাহক প্যানেল (Customer)',
+        providerPanelTitle: 'কারিগর ড্যাশবোর্ড (Provider)',
+        needService: 'সেবা নিতে চাই',
+        needServiceSub: 'কাছের ইলেকট্রিশিয়ান, প্লাম্বার, এসি মেকানিক খুঁজুন',
+        provideService: 'কাজ করতে চাই',
+        provideServiceSub: 'দক্ষ লোক হিসেবে রেজিস্টার করে এলাকায় কাজ পান',
+        searchPlaceholder: 'আপনার কী ধরনের সার্ভিস প্রয়োজন?',
+        emergencyBanner: 'জরুরি সার্ভিস',
+        emergencySub: 'নিকটতম কারিগর দ্রুত পৌঁছে যাবে',
+        viewMap: 'ম্যাপে দেখুন',
+        bookNow: 'বুক করুন',
+        allServices: 'সব সেবা',
+        startsFrom: 'শুরু',
+        urgentSurcharge: 'জরুরি চার্জ (+৩০০ টাকা)',
+        baseRate: 'শুরুর রেট',
+        confirmBooking: 'বুকিং নিশ্চিত করুন',
+        totalPayable: 'মোট প্রদেয় বিল',
+        laborCharge: 'মজুরি',
+        materialsCharge: 'যন্ত্রাংশের খরচ',
+        platformFee: 'প্ল্যাটফর্ম ফি',
+        addParts: 'যন্ত্রাংশ যোগ করুন',
+        startTravel: 'রওনা দিয়েছি',
+        markArrived: 'পৌঁছে গেছি',
+        startWork: 'কাজ শুরু করলাম',
+        completeJob: 'কাজ সম্পন্ন ও বিল প্রদান',
+        todayEarnings: 'আজকের আয়',
+        completedJobs: 'কাজ সম্পন্ন',
+        onlineStatus: 'আপনি অনলাইনে আছেন',
+        offlineStatus: 'আপনি অফলাইনে আছেন',
+        statusAccepted: 'গৃহীত হয়েছে',
+        statusOnTheWay: 'কারিগর রওনা হয়েছেন',
+        statusArrived: 'কারিগর এসে গেছেন',
+        statusInProgress: 'কাজ চলছে',
+        statusCompleted: 'কাজ সম্পন্ন হয়েছে',
+        partsBanner: 'যন্ত্রাংশের খরচে ০% প্ল্যাটফর্ম ফি। আপনি পুরো টাকাটি ফেরত পাবেন।',
+        switchToProvider: '🔄 কারিগর ড্যাশবোর্ডে যান ➔',
+        switchToSeeker: '🔄 গ্রাহক প্যানেলে যান ➔'
+      },
+      en: {
+        appName: 'Dokkho Lok Khuji',
+        tagline: 'Trusted professionals in your neighborhood',
+        customerPanelTitle: 'Customer Portal',
+        providerPanelTitle: 'Technician Dashboard',
+        needService: 'I Need Service',
+        needServiceSub: 'Find nearby electrician, plumber, AC repair & more',
+        provideService: 'I Want to Work',
+        provideServiceSub: 'Register your skills, earn money & get jobs nearby',
+        searchPlaceholder: 'What service do you need today?',
+        emergencyBanner: 'Emergency Service',
+        emergencySub: 'Nearest technician dispatched immediately',
+        viewMap: 'View on Map',
+        bookNow: 'Book Now',
+        allServices: 'All Services',
+        startsFrom: 'starts',
+        urgentSurcharge: 'Urgent Surcharge (+300 BDT)',
+        baseRate: 'Base Rate',
+        confirmBooking: 'Confirm Booking',
+        totalPayable: 'Total Payable',
+        laborCharge: 'Labor Charge',
+        materialsCharge: 'Materials & Parts',
+        platformFee: 'Platform Fee',
+        addParts: 'Add Spare Parts',
+        startTravel: 'Start Travel',
+        markArrived: 'I Have Arrived',
+        startWork: 'Start Service',
+        completeJob: 'Complete & Issue Bill',
+        todayEarnings: "Today's Earnings",
+        completedJobs: 'Completed Jobs',
+        onlineStatus: 'You are Online',
+        offlineStatus: 'You are Offline',
+        statusAccepted: 'Accepted',
+        statusOnTheWay: 'Technician is en-route',
+        statusArrived: 'Arrived on-site',
+        statusInProgress: 'Work in progress',
+        statusCompleted: 'Completed',
+        partsBanner: '0% platform fee on replacement parts. 100% reimbursed to you.',
+        switchToProvider: '🔄 Switch to Provider ➔',
+        switchToSeeker: '🔄 Switch to Customer ➔'
+      }
+    };
+
+    function t(key) {
+      return (dict[currentLang] && dict[currentLang][key]) ? dict[currentLang][key] : key;
+    }
+
+    function bnNum(num) {
+      if (currentLang !== 'bn') return num.toString();
+      const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+      return num.toString().split('').map(c => {
+        const code = c.charCodeAt(0);
+        return (code >= 48 && code <= 57) ? bn[code - 48] : c;
+      }).join('');
+    }
+
+    function toggleLang() {
+      currentLang = currentLang === 'bn' ? 'en' : 'bn';
+      document.getElementById('lang-btn-text').innerText = currentLang === 'bn' ? '🌐 বাংলা / EN' : '🌐 EN / বাংলা';
+      updateTopRoleBanner();
+      render();
+    }
+
+    // Role Toggling with absolute visual clarity (Fix Issue 6)
+    function toggleRole() {
+      currentRole = currentRole === 'seeker' ? 'provider' : 'seeker';
+      currentScreen = currentRole === 'seeker' ? 'catalog' : 'provider_home';
+      updateTopRoleBanner();
+      render();
+    }
+
+    function updateTopRoleBanner() {
+      const banner = document.getElementById('role-status-banner');
+      const icon = document.getElementById('role-status-icon');
+      const text = document.getElementById('role-status-text');
+      const topBtn = document.getElementById('top-role-btn-text');
+
+      if (currentRole === 'seeker') {
+        banner.className = 'px-3 py-1 text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-sm bg-emerald-950 border border-emerald-500 text-emerald-300';
+        icon.innerText = '👤';
+        text.innerText = currentLang === 'bn' ? 'বর্তমান: গ্রাহক প্যানেল (Customer / Hirer)' : 'Current: Customer Portal (Hirer)';
+        topBtn.innerText = currentLang === 'bn' ? '🛠️ কারিগর প্যানেল' : '🛠️ Provider Mode';
+      } else {
+        banner.className = 'px-3 py-1 text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-sm bg-amber-950 border border-amber-500 text-amber-300';
+        icon.innerText = '🛠️';
+        text.innerText = currentLang === 'bn' ? 'বর্তমান: কারিগর প্যানেল (Technician / Worker)' : 'Current: Technician Dashboard (Worker)';
+        topBtn.innerText = currentLang === 'bn' ? '👤 গ্রাহক প্যানেল' : '👤 Customer Mode';
+      }
+    }
+
+    function setScreen(screen) {
+      currentScreen = screen;
+      render();
+    }
+
+    // Category Switching (Fix Issue 2 & 7)
+    function selectCategory(catId) {
+      selectedCategoryId = catId;
+      render();
+    }
+
+    // Voice Note Handling (Fix Issue 3)
+    function toggleVoiceRecord() {
+      if (!isVoiceRecording) {
+        isVoiceRecording = true;
+        voiceDuration = 0;
+        hasVoiceRecorded = false;
+        render();
+        voiceTimer = setInterval(() => {
+          voiceDuration++;
+          if (voiceDuration >= 30) {
+            toggleVoiceRecord();
+          } else {
+            const timerEl = document.getElementById('voice-record-timer');
+            if (timerEl) {
+              timerEl.innerText = bnNum(voiceDuration);
+            }
+          }
+        }, 1000);
+      } else {
+        clearInterval(voiceTimer);
+        isVoiceRecording = false;
+        hasVoiceRecorded = true;
+        render();
+      }
+    }
+
+    function togglePlayVoice() {
+      isVoicePlaying = !isVoicePlaying;
+      render();
+      if (isVoicePlaying) {
+        clearTimeout(voicePlayTimer);
+        voicePlayTimer = setTimeout(() => {
+          isVoicePlaying = false;
+          render();
+        }, 3000);
+      }
+    }
+
+    function clearVoiceNote() {
+      clearInterval(voiceTimer);
+      clearTimeout(voicePlayTimer);
+      isVoiceRecording = false;
+      hasVoiceRecorded = false;
+      isVoicePlaying = false;
+      voiceDuration = 0;
+      render();
+    }
+
+    // Image Attachment Handling (Fix Issue 3)
+    function triggerPhotoPicker() {
+      const fileInput = document.getElementById('photo-file-input');
+      if (fileInput) fileInput.click();
+    }
+
+    function handlePhotoUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          attachedPhotoData = e.target.result;
+          attachedPhotoName = file.name;
+          render();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearAttachedPhoto() {
+      attachedPhotoData = null;
+      attachedPhotoName = '';
+      const fileInput = document.getElementById('photo-file-input');
+      if (fileInput) fileInput.value = '';
+      render();
+    }
+
+    // Payment Selection (Fix Issue 4)
+    function selectPaymentMethod(method) {
+      selectedPaymentMethod = method;
+      render();
+    }
+
+    // Provider Selection on Radar Map (Fix Issue 1)
+    function selectProvider(provId) {
+      selectedProviderId = provId;
+      render();
+    }
+
+    // Bidding Modal (Fix Issue 5)
+    function openBiddingModal() {
+      const modal = document.getElementById('bidding-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeBiddingModal() {
+      const modal = document.getElementById('bidding-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function openPostJobModal() {
+      closeBiddingModal();
+      const modal = document.getElementById('post-job-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closePostJobModal() {
+      const modal = document.getElementById('post-job-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function submitCustomJob() {
+      const title = document.getElementById('custom-job-title').value.trim();
+      const budget = parseFloat(document.getElementById('custom-job-budget').value) || 2500;
+      const desc = document.getElementById('custom-job-desc').value.trim();
+
+      if (!title) {
+        alert(currentLang === 'bn' ? 'কাজের শিরোনাম দিন!' : 'Please enter job title!');
+        return;
+      }
+
+      customJobs.unshift({
+        id: Date.now(),
+        titleBn: title,
+        titleEn: title,
+        budget: budget,
+        locationBn: 'বনানী, ঢাকা',
+        locationEn: 'Banani, Dhaka',
+        descriptionBn: desc || 'জরুরি ভিত্তিতে অভিজ্ঞ টেকনিশিয়ান প্রয়োজন।',
+        descriptionEn: desc || 'Urgent requirement for verified technician.',
+        proposals: [
+          {
+            id: 101,
+            providerName: 'মোঃ রফিকুল ইসলাম',
+            providerAvatar: 'assets/avatars/ac_technician.jpg',
+            rating: '★ 4.9 (48)',
+            quotedLabor: Math.round(budget * 0.95),
+            noteBn: 'আমি প্রয়োজনীয় সব সরঞ্জাম নিয়ে অতি দ্রুত শুরু করতে পারি।',
+            noteEn: 'Ready with full toolkits to begin immediately.'
+          },
+          {
+            id: 102,
+            providerName: 'তানভীর রহমান',
+            providerAvatar: 'assets/avatars/electrician.jpg',
+            rating: '★ 4.85 (32)',
+            quotedLabor: Math.round(budget * 0.9),
+            noteBn: 'সঠিক মূল্যে উন্নত মানের কাজের নিশ্চয়তা দিচ্ছি।',
+            noteEn: 'High quality workmanship guaranteed.'
+          }
+        ]
+      });
+
+      closePostJobModal();
+      openBiddingModal();
+      render();
+    }
+
+    function acceptProposalBid(providerName, quotedLabor, avatar) {
+      closeBiddingModal();
+      activeJob.providerName = providerName;
+      activeJob.providerAvatar = avatar || 'assets/avatars/ac_technician.jpg';
+      activeJob.laborAmount = quotedLabor;
+      activeJob.status = 'Accepted';
+      activeJob.materialsAmount = 0;
+      activeJob.parts = [];
+      setScreen('tracking');
+    }
+
+    function negotiateCounterOffer(proposalId, currentLabor) {
+      const counter = prompt(
+        currentLang === 'bn' 
+          ? `বর্তমান প্রস্তাব: ৳ ${currentLabor}। আপনার পাল্টা প্রস্তাবিত মজুরি (টাকা):` 
+          : `Current Bid: ${currentLabor} BDT. Enter your counter-offer (BDT):`,
+        (currentLabor - 200).toString()
+      );
+      if (counter && !isNaN(counter)) {
+        alert(currentLang === 'bn' 
+          ? `কারিগরকে ৳ ${counter} এর পাল্টা অফার পাঠানো হয়েছে!` 
+          : `Counter proposal of ${counter} BDT sent to technician!`);
+      }
+    }
+
+    function toggleAiChatModal() {
+      showAiChatModal = !showAiChatModal;
+      render();
+    }
+
+    function askAiQuestion(topic) {
+      if (topic === 'booking') {
+        alert(currentLang === 'bn' 
+          ? 'Dokkho AI:\nআপনার বুকিং #১০০১ একটিভ রয়েছে। টেকনিশিয়ান মোঃ রফিকুল ইসলাম আপনার ঠিকানার দিকে রওনা হয়েছেন (আনুমানিক ১৫ মিনিট বাকি)।' 
+          : 'Dokkho AI:\nYour booking #1001 is active. AC Technician Rafiqul is en-route (~15 mins away).');
+      } else if (topic === 'rates') {
+        alert(currentLang === 'bn' 
+          ? 'Dokkho AI:\nপ্রারম্ভিক সার্ভিস রেট:\n• এসি ওয়াশ: ৫০০ টাকা\n• ইলেকট্রিশিয়ান: ৪০০ টাকা\n• প্লাম্বিং: ৩৫০ টাকা\n• ফ্ল্যাট ক্লিনিং: ৮০০ টাকা' 
+          : 'Dokkho AI:\nBase Rates:\n• AC Jet Wash: 500 BDT\n• Electrician: 400 BDT\n• Plumbing: 350 BDT\n• Deep Cleaning: 800 BDT');
+      } else if (topic === 'cancel') {
+        alert(currentLang === 'bn' 
+          ? 'Dokkho AI:\nকারিগর রওনা দেওয়ার পূর্বে ফ্রি ক্যান্সেলেশন সম্ভব। রওনা দেওয়ার পর বাতিল করলে ২০০ টাকা ভ্রমণ ক্ষতিপূরণ প্রযোজ্য হতে পারে।' 
+          : 'Dokkho AI:\nFree cancellation before technician departs. Standard 200 BDT travel fee applies once en-route.');
+      }
+    }
+
+    // Main Renderer
+    function render() {
+      const container = document.getElementById('screen-container');
+      if (currentScreen === 'onboarding') {
+        container.innerHTML = renderOnboarding();
+      } else if (currentScreen === 'catalog') {
+        container.innerHTML = renderCatalog();
+      } else if (currentScreen === 'map') {
+        container.innerHTML = renderMap();
+      } else if (currentScreen === 'tracking') {
+        container.innerHTML = renderTracking();
+      } else if (currentScreen === 'provider_home') {
+        container.innerHTML = renderProviderHome();
+      }
+    }
+
+    // Screen: Onboarding
+    function renderOnboarding() {
+      return `
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-sm">🛠️</div>
+                <span class="font-bold text-slate-800 text-lg">${t('appName')}</span>
+              </div>
+              <button onclick="toggleLang()" class="px-2.5 py-1 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-full border border-emerald-300">
+                ${currentLang === 'bn' ? 'EN' : 'বাংলা'}
+              </button>
+            </div>
+
+            <div class="text-center my-6">
+              <h2 class="text-xl font-bold text-slate-900">${t('tagline')}</h2>
+              <p class="text-xs text-slate-500 mt-1">
+                ${currentLang === 'bn' ? 'আপনার ভূমিকা নির্বাচন করে এগিয়ে যান' : 'Select your role to get started'}
+              </p>
+            </div>
+
+            <!-- Card 1: Need Service (Customer / Hirer) -->
+            <div onclick="currentRole='seeker'; setScreen('catalog'); updateTopRoleBanner()" class="p-4 bg-white rounded-2xl border-2 border-emerald-500 shadow-sm hover:shadow-md cursor-pointer transition flex items-center space-x-3 mb-4">
+              <div class="relative w-16 h-16 rounded-full overflow-hidden border-2 border-emerald-500 shrink-0">
+                <img src="assets/avatars/general_technician.jpg" class="w-full h-full object-cover" onerror="this.src='assets/avatars/ac_technician.jpg'">
+                <div class="absolute bottom-0 right-0 bg-emerald-600 text-white p-0.5 rounded-full text-[10px]">🏠</div>
+              </div>
+              <div class="flex-1">
+                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded">${currentLang === 'bn' ? 'গ্রাহক / হায়ারার' : 'Customer / Seeker'}</span>
+                <h3 class="font-bold text-base text-slate-900 mt-0.5">${t('needService')}</h3>
+                <p class="text-xs text-slate-500 leading-tight">${t('needServiceSub')}</p>
+              </div>
+              <span class="text-emerald-600 font-bold text-lg">➔</span>
+            </div>
+
+            <!-- Card 2: Provide Service (Technician / Worker) -->
+            <div onclick="currentRole='provider'; setScreen('provider_home'); updateTopRoleBanner()" class="p-4 bg-white rounded-2xl border-2 border-amber-500 shadow-sm hover:shadow-md cursor-pointer transition flex items-center space-x-3">
+              <div class="relative w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500 shrink-0">
+                <img src="assets/avatars/electrician.jpg" class="w-full h-full object-cover">
+                <div class="absolute bottom-0 right-0 bg-amber-500 text-white p-0.5 rounded-full text-[10px]">⚡</div>
+              </div>
+              <div class="flex-1">
+                <span class="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-bold rounded">${currentLang === 'bn' ? 'কারিগর / টেকনিশিয়ান' : 'Technician / Worker'}</span>
+                <h3 class="font-bold text-base text-slate-900 mt-0.5">${t('provideService')}</h3>
+                <p class="text-xs text-slate-500 leading-tight">${t('provideServiceSub')}</p>
+              </div>
+              <span class="text-amber-600 font-bold text-lg">➔</span>
+            </div>
+          </div>
+
+          <div class="text-center text-[11px] text-slate-500 py-2 bg-slate-50 rounded-xl p-2 border border-slate-200">
+            💡 ${currentLang === 'bn' ? 'আপনি পরবর্তীতে যেকোনো সময় অ্যাপের ভেতর থেকে মোড পরিবর্তন করতে পারবেন।' : 'You can switch between Customer & Technician anytime.'}
+          </div>
+        </div>
+      `;
+    }
+
+    // Screen: Catalog (Customer Portal)
+    function renderCatalog() {
+      // Filter services based on selected category (Fix Issue 2 & 7)
+      const filteredServices = selectedCategoryId === 'all' 
+        ? services 
+        : services.filter(s => s.categoryId === selectedCategoryId);
+
+      return `
+        <!-- Top App Bar with Clear Active Role Indicator (Fix Issue 6) -->
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-b border-slate-200 sticky top-0 z-30">
+          <div>
+            <div class="flex items-center space-x-1.5">
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-md">
+                👤 ${currentLang === 'bn' ? 'গ্রাহক প্যানেল' : 'Customer Portal'}
+              </span>
+              <span class="text-xs text-slate-400 font-semibold">• বনানী, ঢাকা</span>
+            </div>
+            <div class="text-[11px] font-bold text-slate-800 mt-0.5">${t('appName')}</div>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <button onclick="toggleRole()" title="Switch to Provider Dashboard" class="px-2.5 py-1 bg-amber-50 text-amber-800 text-xs font-bold rounded-lg border border-amber-300 hover:bg-amber-100 transition flex items-center gap-1">
+              <span>🛠️</span>
+              <span>${currentLang === 'bn' ? 'কারিগর মোড' : 'Provider'}</span>
+            </button>
+            <button onclick="toggleLang()" class="px-2 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg border border-slate-200">
+              ${currentLang === 'bn' ? 'EN' : 'বাং'}
+            </button>
+          </div>
+        </div>
+
+        <div class="p-4 space-y-3.5">
+          <!-- Search Bar -->
+          <div class="relative">
+            <input type="text" placeholder="${t('searchPlaceholder')}" class="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-9 pr-10 text-xs focus:outline-none focus:border-emerald-600 shadow-sm">
+            <span class="absolute left-3 top-2.5 text-emerald-600 text-sm">🔍</span>
+            <button onclick="setScreen('map')" class="absolute right-2 top-2 p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg">🗺️</button>
+          </div>
+
+          <!-- Emergency Service Banner (Click opens radar with emergency toggle) -->
+          <div class="p-3.5 rounded-2xl bg-gradient-to-r from-red-600 to-rose-700 text-white flex items-center justify-between shadow-md">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-lg animate-pulse">⚡</div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <h4 class="font-bold text-sm">${t('emergencyBanner')}</h4>
+                  <span class="px-1.5 py-0.2 bg-white/20 text-[9px] font-bold rounded">+৳৩০০</span>
+                </div>
+                <p class="text-[11px] text-rose-100">${t('emergencySub')}</p>
+              </div>
+            </div>
+            <button onclick="isUrgent=true; setScreen('map')" class="px-3 py-1.5 bg-white text-red-700 hover:bg-red-50 font-bold text-xs rounded-xl shadow">
+              ${t('viewMap')} ➔
+            </button>
+          </div>
+
+          <!-- Feature: Post Custom Job & Price Negotiation Card (Fix Issue 5) -->
+          <div onclick="openBiddingModal()" class="p-3 bg-gradient-to-r from-blue-700 to-indigo-800 rounded-2xl text-white flex items-center justify-between shadow-sm cursor-pointer hover:shadow-md transition">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-base">🔨</div>
+              <div>
+                <h4 class="font-bold text-xs">${currentLang === 'bn' ? 'কাস্টম কাজের অফার পোস্ট ও দরদাম' : 'Post Custom Job & Compare Bids'}</h4>
+                <p class="text-[10px] text-blue-100">${currentLang === 'bn' ? 'বাজেট দিন, অভিজ্ঞদের কোটেশন তুলনা করুন' : 'Set budget, receive & compare proposals'}</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 bg-white text-blue-800 font-bold text-[10px] rounded-lg shadow-sm">
+              ${currentLang === 'bn' ? 'দরদাম ➔' : 'Bids ➔'}
+            </span>
+          </div>
+
+          <!-- Dynamic Category Chips (Fix Issue 2 & 7) -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5 px-0.5">
+              <span class="text-xs font-bold text-slate-800">${currentLang === 'bn' ? 'ক্যাটেগরি অনুযায়ী সার্ভিস' : 'Service Categories'}</span>
+              <span class="text-[10px] text-slate-400">${categories.length} ${currentLang === 'bn' ? 'টি' : 'categories'}</span>
+            </div>
+            <div class="flex space-x-1.5 overflow-x-auto pb-1 text-xs custom-scrollbar">
+              ${categories.map(cat => {
+                const isSelected = selectedCategoryId === cat.id;
+                const catName = currentLang === 'bn' ? cat.nameBn : cat.nameEn;
+                return `
+                  <button onclick="selectCategory('${cat.id}')" class="px-3 py-1.5 rounded-full shrink-0 font-bold text-xs transition flex items-center gap-1 ${
+                    isSelected 
+                      ? 'bg-emerald-600 text-white shadow-sm' 
+                      : 'bg-white text-slate-700 border border-slate-200 hover:border-emerald-400'
+                  }">
+                    <span>${cat.icon}</span>
+                    <span>${catName}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Service Grid (Bilingual & Category Filtered) -->
+          <div>
+            <div class="flex justify-between items-center mb-1.5 px-0.5">
+              <span class="text-xs font-bold text-slate-800">
+                ${currentLang === 'bn' ? 'উপলব্ধ সেবাসমূহ' : 'Available Services'} (${filteredServices.length})
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 pb-16">
+              ${filteredServices.map(s => {
+                const serviceTitle = currentLang === 'bn' ? s.nameBn : s.nameEn;
+                return `
+                  <div onclick="setScreen('map')" class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center text-center cursor-pointer hover:border-emerald-500 hover:shadow-md transition">
+                    <div class="w-14 h-14 rounded-full overflow-hidden mb-2 shadow border border-slate-100">
+                      <img src="${s.avatar}" class="w-full h-full object-cover" onerror="this.src='assets/avatars/general_technician.jpg'">
+                    </div>
+                    <h5 class="text-xs font-bold text-slate-800 line-clamp-2 h-8 flex items-center justify-center">${serviceTitle}</h5>
+                    <span class="text-emerald-700 font-bold text-xs mt-1 bg-emerald-50 px-2 py-0.5 rounded-full">
+                      ৳ ${bnNum(s.price)} / ${t('startsFrom')}
+                    </span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Bidding & Proposal Comparison Modal (Fix Issue 5) -->
+        <div id="bidding-modal" class="hidden absolute inset-0 bg-black/60 z-50 flex flex-col justify-end">
+          <div class="bg-white p-5 rounded-t-3xl max-h-[92%] overflow-y-auto space-y-3 custom-scrollbar">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm">
+                  ${currentLang === 'bn' ? 'কাস্টম কাজের অফার ও কোটেশন' : 'Custom Job Bids & Proposals'}
+                </h3>
+                <p class="text-[10px] text-slate-500">
+                  ${currentLang === 'bn' ? 'অভিজ্ঞ কারিগরদের প্রস্তাব তুলনা ও দরদাম করুন' : 'Compare proposals & negotiate quotes'}
+                </p>
+              </div>
+              <button onclick="closeBiddingModal()" class="text-slate-400 hover:text-slate-700 text-lg font-bold p-1">✕</button>
+            </div>
+
+            <!-- Post New Job CTA -->
+            <button onclick="openPostJobModal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow flex items-center justify-center gap-1.5">
+              <span>➕</span>
+              <span>${currentLang === 'bn' ? 'নতুন কাস্টম কাজের অফার পোস্ট করুন' : 'Post a New Custom Work Request'}</span>
+            </button>
+
+            <!-- Listed Custom Jobs & Their Proposals -->
+            ${customJobs.map(job => {
+              const jobTitle = currentLang === 'bn' ? job.titleBn : job.titleEn;
+              const jobDesc = currentLang === 'bn' ? job.descriptionBn : job.descriptionEn;
+              const jobLoc = currentLang === 'bn' ? job.locationBn : job.locationEn;
+
+              return `
+                <div class="p-3 bg-blue-50 rounded-2xl border border-blue-200 text-xs space-y-1.5">
+                  <div class="flex justify-between items-start font-bold text-blue-900">
+                    <span class="flex-1">${jobTitle}</span>
+                    <span class="text-emerald-700 shrink-0 ml-2">বাজেট: ৳ ${bnNum(job.budget)}</span>
+                  </div>
+                  <p class="text-[11px] text-blue-700">${jobDesc}</p>
+                  <div class="text-[10px] text-slate-500">📍 ${jobLoc}</div>
+
+                  <!-- Incoming Proposals List -->
+                  <div class="mt-2 pt-2 border-t border-blue-200 space-y-2">
+                    <span class="font-bold text-slate-800 text-[11px] block">
+                      ${currentLang === 'bn' ? `কারিগরদের প্রস্তাব (${job.proposals.length} টি):` : `Technician Bids (${job.proposals.length}):`}
+                    </span>
+
+                    ${job.proposals.map(prop => {
+                      const propNote = currentLang === 'bn' ? prop.noteBn : prop.noteEn;
+                      return `
+                        <div class="p-2.5 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                              <img src="${prop.providerAvatar}" class="w-8 h-8 rounded-full object-cover border border-emerald-500">
+                              <div>
+                                <h4 class="font-bold text-xs text-slate-900">${prop.providerName}</h4>
+                                <span class="text-[10px] text-amber-500 font-bold">${prop.rating}</span>
+                              </div>
+                            </div>
+                            <div class="text-right">
+                              <span class="text-xs text-slate-400 block line-through">৳ ${bnNum(job.budget)}</span>
+                              <span class="text-sm font-bold text-emerald-700">৳ ${bnNum(prop.quotedLabor)}</span>
+                            </div>
+                          </div>
+                          
+                          <p class="text-[10px] text-slate-600 italic bg-slate-50 p-1.5 rounded-lg">"${propNote}"</p>
+
+                          <div class="grid grid-cols-2 gap-1.5">
+                            <button onclick="negotiateCounterOffer(${prop.id}, ${prop.quotedLabor})" class="py-1.5 bg-amber-50 border border-amber-300 text-amber-800 font-bold text-[10px] rounded-lg">
+                              💬 ${currentLang === 'bn' ? 'পাল্টা অফার (দরদাম)' : 'Counter-Offer'}
+                            </button>
+                            <button onclick="acceptProposalBid('${prop.providerName}', ${prop.quotedLabor}, '${prop.providerAvatar}')" class="py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] rounded-lg shadow-sm">
+                              ✓ ${currentLang === 'bn' ? 'প্রস্তাব গ্রহণ করুন' : 'Accept Bid'}
+                            </button>
+                          </div>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+
+            <button onclick="closeBiddingModal()" class="w-full py-2 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl">
+              ${currentLang === 'bn' ? 'বন্ধ করুন' : 'Close'}
+            </button>
+          </div>
+        </div>
+
+        <!-- Create Custom Job Modal (Fix Issue 5) -->
+        <div id="post-job-modal" class="hidden absolute inset-0 bg-black/60 z-50 flex flex-col justify-end">
+          <div class="bg-white p-5 rounded-t-3xl max-h-[90%] overflow-y-auto space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+              <h3 class="font-bold text-slate-900 text-sm">
+                ${currentLang === 'bn' ? 'কাস্টম কাজের অফার পোস্ট' : 'Post Custom Work Order'}
+              </h3>
+              <button onclick="closePostJobModal()" class="text-slate-400 text-lg">✕</button>
+            </div>
+
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">
+                ${currentLang === 'bn' ? 'কাজের শিরোনাম' : 'Job Title'}
+              </label>
+              <input id="custom-job-title" type="text" placeholder="যেমন: ৩ রুমের ইলেকট্রিক লাইন ও ডিবি বোর্ড মেরামত" class="w-full border border-slate-200 rounded-xl p-2 text-xs">
+            </div>
+
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">
+                ${currentLang === 'bn' ? 'আপনার সর্বোচ্চ বাজেট (টাকা)' : 'Your Maximum Budget (BDT)'}
+              </label>
+              <input id="custom-job-budget" type="number" value="3500" class="w-full border border-slate-200 rounded-xl p-2 text-xs">
+            </div>
+
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">
+                ${currentLang === 'bn' ? 'কাজের বিস্তারিত বিবরণ' : 'Work Description & Scope'}
+              </label>
+              <textarea id="custom-job-desc" rows="3" placeholder="সমস্যার বর্ণনা, কোন ব্র্যান্ডের মালামাল লাগবে ইত্যাদি..." class="w-full border border-slate-200 rounded-xl p-2 text-xs"></textarea>
+            </div>
+
+            <button onclick="submitCustomJob()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow">
+              🚀 ${currentLang === 'bn' ? 'কাজের অফার প্রকাশ করুন' : 'Publish Job Request'}
+            </button>
+          </div>
+        </div>
+
+        <!-- Floating Dokkho AI Support Button -->
+        <button onclick="toggleAiChatModal()" class="fixed bottom-20 right-4 z-40 bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-full shadow-lg flex items-center space-x-1.5 transition transform hover:scale-105 border border-emerald-400">
+          <span class="text-base">🤖</span>
+          <span class="text-xs font-bold">Dokkho AI</span>
+        </button>
+
+        <!-- Dokkho AI Support Chat Bottom Sheet -->
+        <div id="ai-chat-modal" class="${showAiChatModal ? '' : 'hidden'} fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-end justify-center">
+          <div class="w-[390px] max-h-[85%] bg-white rounded-t-3xl p-4 flex flex-col space-y-3 shadow-2xl">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-base">🤖</div>
+                <div>
+                  <h3 class="font-bold text-xs text-slate-800">${currentLang === 'bn' ? 'দক্ষ এআই সহকারী' : 'Dokkho AI Assistant'}</h3>
+                  <p class="text-[10px] text-emerald-600 font-semibold">Gemini AI • ২৪/৭ সক্রিয়</p>
+                </div>
+              </div>
+              <button onclick="toggleAiChatModal()" class="text-slate-400 text-base font-bold">✕</button>
+            </div>
+
+            <!-- Messages area -->
+            <div class="space-y-2.5 overflow-y-auto max-h-[260px] text-xs pr-1">
+              <div class="bg-slate-100 p-2.5 rounded-2xl rounded-tl-sm text-slate-700">
+                ${currentLang === 'bn' ? 'আসসালামু আলাইকুম! আমি Dokkho AI সহকারী। আপনার কী ধরনের সাহায্য প্রয়োজন?' : 'Hello! I am Dokkho AI Assistant. How can I help you today?'}
+              </div>
+              <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-[11px] text-emerald-900 font-medium">
+                ${currentLang === 'bn' ? 'চলতি বুকিং #১০০১: এসি টেকনিশিয়ান মোঃ রফিকুল ইসলাম রওনা হয়েছেন (১৫ মিনিট বাকি)।' : 'Active Booking #1001: AC Technician Rafiqul is on the way (15 mins away).'}
+              </div>
+            </div>
+
+            <!-- Preset prompts -->
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <button onclick="askAiQuestion('booking')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-semibold rounded-lg">📍 ${currentLang === 'bn' ? 'বুকিং ট্র্যাক' : 'Track Booking'}</button>
+              <button onclick="askAiQuestion('rates')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-semibold rounded-lg">💰 ${currentLang === 'bn' ? 'সার্ভিস রেট' : 'Service Rates'}</button>
+              <button onclick="askAiQuestion('cancel')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-semibold rounded-lg">❌ ${currentLang === 'bn' ? 'ক্যান্সেলেশন নিয়ম' : 'Cancellation'}</button>
+            </div>
+
+            <!-- Input bar -->
+            <div class="flex items-center space-x-1.5 pt-1">
+              <input type="text" placeholder="${currentLang === 'bn' ? 'প্রশ্ন লিখুন...' : 'Type question...'}" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
+              <button onclick="askAiQuestion('booking')" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold">➤</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Navigation Bar -->
+        <div class="fixed bottom-5 w-[390px] bg-white border-t border-slate-200 px-6 py-2 flex items-center justify-around text-xs z-30">
+          <button onclick="setScreen('catalog')" class="flex flex-col items-center text-emerald-600 font-bold">
+            <span>▦</span>
+            <span>${currentLang === 'bn' ? 'সেবা' : 'Services'}</span>
+          </button>
+          <button onclick="setScreen('map')" class="flex flex-col items-center text-slate-400 hover:text-emerald-600">
+            <span>🗺️</span>
+            <span>${currentLang === 'bn' ? 'ম্যাপ' : 'Map'}</span>
+          </button>
+          <button onclick="setScreen('tracking')" class="flex flex-col items-center text-slate-400 hover:text-emerald-600">
+            <span>🧾</span>
+            <span>${currentLang === 'bn' ? 'বুকিং' : 'Bookings'}</span>
+          </button>
+        </div>
+      `;
+    }
+
+    // Screen: Radar Map (Fix Issue 1: Provider selection & Emergency selection)
+    function renderMap() {
+      const activeProvider = providers.find(p => p.id === selectedProviderId) || providers[0];
+      const laborCost = activeProvider.baseRate;
+      const urgencyAmount = isUrgent ? 300 : 0;
+      const totalCost = laborCost + urgencyAmount;
+
+      return `
+        <div class="relative flex-1 flex flex-col h-full">
+          <!-- Top Back & Title Bar -->
+          <div class="absolute top-3 left-3 right-3 z-30 flex items-center space-x-2">
+            <button onclick="setScreen('catalog')" class="w-9 h-9 rounded-full bg-white shadow flex items-center justify-center font-bold text-slate-800">‹</button>
+            
+            <div class="flex-1 bg-white px-3 py-2 rounded-xl shadow flex items-center space-x-2">
+              <span class="text-emerald-600">🎯</span>
+              <div class="truncate text-xs">
+                <span class="font-bold text-slate-800 block truncate">
+                  ${currentLang === 'bn' ? 'নিকটস্থ কারিগর রাডার' : 'Nearby Technicians Radar'}
+                </span>
+                <span class="text-[10px] text-slate-400">
+                  ${currentLang === 'bn' ? 'যেকোনো কারিগরে ট্যাপ করে পছন্দ করুন' : 'Tap any technician marker to select'}
+                </span>
+              </div>
+            </div>
+
+            <!-- Emergency / Urgent Surcharge Toggle (Fix Issue 1) -->
+            <button onclick="isUrgent = !isUrgent; render()" class="px-2.5 py-1.5 rounded-xl shadow text-xs font-bold flex items-center space-x-1 transition ${
+              isUrgent ? 'bg-red-600 text-white animate-pulse' : 'bg-white text-slate-700 border border-slate-200'
+            }">
+              <span>⚡</span>
+              <span>${isUrgent ? (currentLang === 'bn' ? 'জরুরি (+৳৩০০)' : 'Urgent (+300)') : t('emergencyBanner')}</span>
+            </button>
+          </div>
+
+          <!-- Interactive Simulated Map Canvas with Selectable Provider Markers -->
+          <div class="flex-1 bg-emerald-50 relative overflow-hidden flex items-center justify-center">
+            <!-- Map Grid -->
+            <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#00875a 1px, transparent 1px); background-size: 20px 20px;"></div>
+            
+            <!-- Road Lines -->
+            <svg class="absolute inset-0 w-full h-full stroke-slate-300 stroke-2">
+              <line x1="0" y1="200" x2="390" y2="200" stroke-width="8" stroke="#cbd5e1" />
+              <line x1="180" y1="0" x2="180" y2="600" stroke-width="8" stroke="#cbd5e1" />
+              <line x1="50" y1="400" x2="350" y2="150" stroke-width="4" stroke="#e2e8f0" stroke-dasharray="4" />
+            </svg>
+
+            <!-- Customer Marker (You) -->
+            <div class="absolute top-[280px] left-[180px] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-20">
+              <div class="w-10 h-10 rounded-full bg-red-500 border-2 border-white shadow-lg flex items-center justify-center text-white text-xs">🏠</div>
+              <span class="px-2 py-0.5 bg-white text-[10px] font-bold text-slate-800 rounded shadow mt-1">${currentLang === 'bn' ? 'আপনার অবস্থান' : 'You'}</span>
+            </div>
+
+            <!-- 4 Dynamic Clickable Provider Markers (Fix Issue 1) -->
+            ${providers.map(prov => {
+              const isSelected = prov.id === selectedProviderId;
+              return `
+                <div onclick="selectProvider(${prov.id})" style="top: ${prov.coords.y}px; left: ${prov.coords.x}px;" class="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer z-20 group">
+                  <div class="relative">
+                    ${isSelected ? '<div class="absolute -inset-2 bg-emerald-400 rounded-full pulse-radar"></div>' : ''}
+                    <div class="w-12 h-12 rounded-full overflow-hidden border-2 ${isSelected ? 'border-emerald-600 scale-110 shadow-lg' : 'border-white shadow-md'} relative bg-white transition">
+                      <img src="${prov.avatar}" class="w-full h-full object-cover">
+                    </div>
+                  </div>
+                  <span class="px-2 py-0.5 ${isSelected ? 'bg-emerald-600 text-white font-bold' : 'bg-white text-slate-700 font-semibold'} text-[10px] rounded-full shadow mt-1 whitespace-nowrap transition">
+                    ⭐ ${prov.rating} • ${prov.distanceKm} km
+                  </span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Bottom Selected Provider Floating Card (Fix Issue 1) -->
+          <div class="bg-white p-4 rounded-t-3xl shadow-2xl border-t border-slate-200 z-30">
+            <div class="flex items-center justify-between mb-2 pb-2 border-b border-slate-100">
+              <span class="text-[10px] font-bold text-slate-400">
+                ${currentLang === 'bn' ? 'নির্বাচিত কারিগর (বুকিং করতে ক্লিক করুন):' : 'Selected Technician (Ready to Book):'}
+              </span>
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">
+                ${currentLang === 'bn' ? activeProvider.badgeBn : activeProvider.badgeEn}
+              </span>
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <div class="w-14 h-14 rounded-full overflow-hidden border border-emerald-500 shadow shrink-0">
+                <img src="${activeProvider.avatar}" class="w-full h-full object-cover">
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center space-x-1">
+                  <h4 class="font-bold text-slate-900 text-sm">
+                    ${currentLang === 'bn' ? activeProvider.nameBn : activeProvider.nameEn}
+                  </h4>
+                  <span class="text-emerald-600 text-xs">✓</span>
+                </div>
+                <p class="text-xs text-slate-500">
+                  ${currentLang === 'bn' ? activeProvider.skillBn : activeProvider.skillEn}
+                </p>
+                <div class="flex items-center space-x-3 text-xs mt-1">
+                  <span class="text-amber-500 font-bold">★ ${activeProvider.rating} (${activeProvider.reviewsCount})</span>
+                  <span class="text-slate-400">•</span>
+                  <span class="text-slate-600">🚶 ${activeProvider.distanceKm} km</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+              <div>
+                <span class="text-[10px] text-slate-400 block">${t('baseRate')}</span>
+                <span class="text-emerald-700 font-bold text-lg">
+                  ৳ ${bnNum(totalCost)}
+                </span>
+                ${isUrgent ? '<span class="text-[10px] text-red-500 font-bold block">(+৳৩০০ জরুরি চার্জ অন্তর্ভুক্ত)</span>' : ''}
+              </div>
+              
+              <button onclick="openBookingModal()" class="px-6 py-2.5 ${isUrgent ? 'bg-red-600 hover:bg-red-500' : 'bg-emerald-600 hover:bg-emerald-500'} text-white font-bold text-xs rounded-xl shadow-md flex items-center space-x-1.5 transition">
+                <span>⚡</span>
+                <span>${isUrgent ? (currentLang === 'bn' ? 'জরুরি বুকিং করুন' : 'Urgent Book Now') : t('bookNow')}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Booking Checkout Modal (Fix Issue 3 & 4) -->
+        <div id="booking-modal" class="hidden absolute inset-0 bg-black/60 z-50 flex flex-col justify-end">
+          <div class="bg-white p-5 rounded-t-3xl max-h-[90%] overflow-y-auto custom-scrollbar space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+              <h3 class="font-bold text-slate-900 text-sm">
+                ${currentLang === 'bn' ? 'বুকিং ও পেমেন্ট বিবরণ' : 'Booking & Payment Confirmation'}
+              </h3>
+              <button onclick="closeBookingModal()" class="text-slate-400 text-lg">✕</button>
+            </div>
+
+            <div class="space-y-3">
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">
+                  ${currentLang === 'bn' ? 'সেবার ঠিকানা' : 'Service Address'}
+                </label>
+                <input id="checkout-address" type="text" value="বাড়ি ১২, রোড ৫, বনানী, ঢাকা" class="w-full border border-slate-200 rounded-xl p-2 text-xs">
+              </div>
+
+              <!-- Voice Diagnostic Note & Photo Upload (Fix Issue 3) -->
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">
+                  ${currentLang === 'bn' ? 'সমস্যার বিবরণ ও ডায়াগনস্টিকস' : 'Problem Description & Diagnostics'}
+                </label>
+                <input id="checkout-notes" type="text" value="এসি ঠান্ডা বাতাস দিচ্ছে না এবং মৃদু শব্দ হচ্ছে" class="w-full border border-slate-200 rounded-xl p-2 text-xs mb-2">
+                
+                <div class="flex items-center space-x-2">
+                  <!-- Interactive Voice Note Recorder -->
+                  ${isVoiceRecording ? `
+                    <div class="flex-1 flex items-center justify-between p-2 bg-red-50 border border-red-300 rounded-xl text-red-700 text-xs animate-pulse">
+                      <span class="flex items-center gap-1 font-bold">
+                        🔴 ${currentLang === 'bn' ? 'রেকর্ড হচ্ছে...' : 'Recording...'} 0:0<span id="voice-record-timer">${bnNum(voiceDuration)}</span>s
+                      </span>
+                      <button onclick="toggleVoiceRecord()" class="px-2.5 py-1 bg-red-600 text-white rounded-lg text-[10px] font-bold">
+                        ${currentLang === 'bn' ? 'থামান ⏹️' : 'Stop ⏹️'}
+                      </button>
+                    </div>
+                  ` : hasVoiceRecorded ? `
+                    <div class="flex-1 flex items-center justify-between p-2 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-800 text-xs">
+                      <button onclick="togglePlayVoice()" class="flex items-center gap-1 font-bold text-emerald-800">
+                        ${isVoicePlaying ? '⏸️ ' + (currentLang === 'bn' ? 'পজ' : 'Pause') : '▶️ ' + (currentLang === 'bn' ? 'ভয়েস শুনুন' : 'Play Voice')} (0:0${bnNum(voiceDuration || 8)}s)
+                      </button>
+                      <button onclick="clearVoiceNote()" title="Delete voice note" class="text-slate-400 hover:text-red-500 text-xs font-bold p-1">🗑️</button>
+                    </div>
+                  ` : `
+                    <button onclick="toggleVoiceRecord()" class="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 flex items-center justify-center gap-1.5 transition">
+                      🎙️ ${currentLang === 'bn' ? 'কণ্ঠে সমস্যা বলুন (ভয়েস নোট)' : 'Record Voice Note'}
+                    </button>
+                  `}
+                  
+                  <!-- Interactive Photo Attachment -->
+                  <button onclick="triggerPhotoPicker()" class="py-2 px-3 ${attachedPhotoData ? 'bg-emerald-100 border-emerald-400 text-emerald-800' : 'bg-slate-100 border-slate-300 text-slate-700'} border rounded-xl text-xs font-bold flex items-center gap-1 transition">
+                    📷 ${attachedPhotoData ? (currentLang === 'bn' ? 'ছবি যুক্ত ✓' : 'Photo Added ✓') : (currentLang === 'bn' ? 'ছবি যোগ' : 'Add Photo')}
+                  </button>
+                </div>
+
+                <!-- Attached Photo Preview Thumbnail -->
+                ${attachedPhotoData ? `
+                  <div class="mt-2 p-2 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between text-[11px] text-emerald-800">
+                    <div class="flex items-center gap-2">
+                      <img src="${attachedPhotoData}" class="w-8 h-8 rounded-lg object-cover border border-emerald-300">
+                      <span class="font-medium truncate max-w-[200px]">${attachedPhotoName || 'Problem_Photo.jpg'}</span>
+                    </div>
+                    <button onclick="clearAttachedPhoto()" class="text-slate-400 hover:text-red-500 font-bold p-1">✕</button>
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Interactive Payment Method Selection (Fix Issue 4) -->
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">
+                  ${currentLang === 'bn' ? 'পেমেন্ট মাধ্যম বেছে নিন' : 'Select Payment Gateway'}
+                </label>
+                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                  <!-- Cash -->
+                  <div onclick="selectPaymentMethod('cash')" class="p-2.5 rounded-xl font-bold cursor-pointer transition border-2 ${
+                    selectedPaymentMethod === 'cash' 
+                      ? 'border-emerald-600 bg-emerald-50 text-emerald-900 shadow-sm' 
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                  }">
+                    💵 ${currentLang === 'bn' ? 'ক্যাশ' : 'Cash'}
+                  </div>
+
+                  <!-- bKash -->
+                  <div onclick="selectPaymentMethod('bkash')" class="p-2.5 rounded-xl font-bold cursor-pointer transition border-2 ${
+                    selectedPaymentMethod === 'bkash' 
+                      ? 'border-pink-600 bg-pink-50 text-pink-900 shadow-sm' 
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                  }">
+                    📱 bKash
+                  </div>
+
+                  <!-- Nagad -->
+                  <div onclick="selectPaymentMethod('nagad')" class="p-2.5 rounded-xl font-bold cursor-pointer transition border-2 ${
+                    selectedPaymentMethod === 'nagad' 
+                      ? 'border-orange-600 bg-orange-50 text-orange-900 shadow-sm' 
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                  }">
+                    💳 নগদ (Nagad)
+                  </div>
+                </div>
+
+                <!-- bKash / Nagad Wallet Phone Prompt -->
+                ${selectedPaymentMethod === 'bkash' ? `
+                  <div class="mt-2 p-2 bg-pink-50 border border-pink-200 rounded-xl text-xs space-y-1">
+                    <span class="text-[11px] text-pink-800 font-bold block">বিকাশ মোবাইল ওয়ালেট নম্বর:</span>
+                    <input type="text" value="${bkashPhoneNumber}" onchange="bkashPhoneNumber=this.value" class="w-full border border-pink-300 rounded-lg p-1.5 text-xs text-slate-800">
+                    <span class="text-[10px] text-pink-600 block">বুকিং শেষে ওটিপি ভেরিফিকেশন দিয়ে বিল পরিশোধ করা যাবে।</span>
+                  </div>
+                ` : selectedPaymentMethod === 'nagad' ? `
+                  <div class="mt-2 p-2 bg-orange-50 border border-orange-200 rounded-xl text-xs space-y-1">
+                    <span class="text-[11px] text-orange-800 font-bold block">নগদ অ্যাকাউন্ট নম্বর:</span>
+                    <input type="text" value="${bkashPhoneNumber}" onchange="bkashPhoneNumber=this.value" class="w-full border border-orange-300 rounded-lg p-1.5 text-xs text-slate-800">
+                    <span class="text-[10px] text-orange-600 block">নগদ পেমেন্ট গেটওয়ের মাধ্যমে পরিশোধ নিশ্চিত হবে।</span>
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Price Box with Surcharge Breakdown -->
+              <div class="p-3 bg-slate-50 rounded-xl space-y-1 text-xs border border-slate-200">
+                <div class="flex justify-between text-slate-600">
+                  <span>${t('laborCharge')} (${activeProvider.nameBn})</span>
+                  <span>৳ ${bnNum(laborCost)}</span>
+                </div>
+                ${isUrgent ? `
+                  <div class="flex justify-between text-red-600 font-bold">
+                    <span>${t('urgentSurcharge')}</span>
+                    <span>৳ ${bnNum(300)}</span>
+                  </div>
+                ` : ''}
+                <div class="flex justify-between text-slate-900 font-bold text-sm pt-2 border-t border-slate-200">
+                  <span>${t('totalPayable')}</span>
+                  <span class="text-emerald-700">৳ ${bnNum(totalCost)}</span>
+                </div>
+              </div>
+
+              <button onclick="confirmBooking(${activeProvider.id})" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg mt-1 transition">
+                ✓ ${t('confirmBooking')}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openBookingModal() {
+      const modal = document.getElementById('booking-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+    function closeBookingModal() {
+      const modal = document.getElementById('booking-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function confirmBooking(providerId) {
+      const prov = providers.find(p => p.id === providerId) || providers[0];
+      activeJob.providerName = prov.nameBn;
+      activeJob.providerPhone = prov.phone;
+      activeJob.providerAvatar = prov.avatar;
+      activeJob.laborAmount = prov.baseRate;
+      activeJob.urgencyFee = isUrgent ? 300 : 0;
+      activeJob.paymentMethod = selectedPaymentMethod;
+      activeJob.status = 'Accepted';
+      activeJob.parts = [];
+      activeJob.materialsAmount = 0;
+      
+      closeBookingModal();
+      setScreen('tracking');
+    }
+
+    // Screen: Live Tracking & Billing
+    function renderTracking() {
+      const steps = [
+        { label: currentLang === 'bn' ? 'গৃহীত' : 'Accepted' },
+        { label: currentLang === 'bn' ? 'রওনা' : 'En Route' },
+        { label: currentLang === 'bn' ? 'উপস্থিত' : 'Arrived' },
+        { label: currentLang === 'bn' ? 'কাজ চলছে' : 'Working' },
+        { label: currentLang === 'bn' ? 'সম্পন্ন' : 'Done' },
+      ];
+
+      return `
+        <div class="relative flex-1 flex flex-col h-full">
+          <!-- Top Header -->
+          <div class="bg-white p-3 border-b border-slate-200 flex items-center justify-between z-20">
+            <button onclick="setScreen('catalog')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 font-bold">‹</button>
+            <div class="text-center">
+              <h4 class="font-bold text-xs text-emerald-700">
+                ${trackingStatusIndex === 0 ? t('statusAccepted') : trackingStatusIndex === 1 ? t('statusOnTheWay') : trackingStatusIndex === 2 ? t('statusArrived') : trackingStatusIndex === 3 ? t('statusInProgress') : t('statusCompleted')}
+              </h4>
+              <p class="text-[10px] text-slate-400">বুকিং #${activeJob.bookingId} (${activeJob.paymentMethod})</p>
+            </div>
+            <button onclick="setScreen('catalog')" class="text-xs text-emerald-600 font-bold">হোম</button>
+          </div>
+
+          <!-- Live Route Canvas -->
+          <div class="flex-1 bg-emerald-50 relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#00875a 1px, transparent 1px); background-size: 20px 20px;"></div>
+            
+            <!-- Moving Motorcycle Avatar -->
+            <div class="absolute top-[210px] left-[150px] -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
+              <div class="w-11 h-11 rounded-full bg-emerald-600 border-2 border-white shadow-xl flex items-center justify-center text-xl">🏍️</div>
+              <span class="px-2 py-0.5 bg-emerald-800 text-white text-[10px] font-bold rounded shadow mt-1">৮ মিনিট দূরে</span>
+            </div>
+
+            <!-- Customer Destination -->
+            <div class="absolute top-[320px] left-[240px] -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center">
+              <div class="w-9 h-9 rounded-full bg-red-500 border-2 border-white shadow-md flex items-center justify-center text-white text-xs">🏠</div>
+            </div>
+          </div>
+
+          <!-- Bottom Status & Billing Stepper -->
+          <div class="bg-white p-4 rounded-t-3xl shadow-xl border-t border-slate-200 z-30 space-y-3">
+            <!-- Stepper Dots -->
+            <div class="flex items-center justify-between px-2">
+              ${steps.map((st, i) => `
+                <div class="flex flex-col items-center flex-1">
+                  <div class="w-3.5 h-3.5 rounded-full border-2 border-white ${i <= trackingStatusIndex ? 'bg-emerald-600' : 'bg-slate-300'} shadow-sm"></div>
+                  <span class="text-[9px] mt-1 ${i <= trackingStatusIndex ? 'text-emerald-700 font-bold' : 'text-slate-400'}">${st.label}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            <!-- Technician Contact Card -->
+            <div class="flex items-center space-x-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+              <div class="w-12 h-12 rounded-full overflow-hidden border border-slate-200 shrink-0">
+                <img src="${activeJob.providerAvatar}" class="w-full h-full object-cover">
+              </div>
+              <div class="flex-1">
+                <h5 class="font-bold text-xs text-slate-800">${activeJob.providerName}</h5>
+                <p class="text-[11px] text-slate-500">📞 ${activeJob.providerPhone} • হোন্ডা সাইন ১২৫</p>
+              </div>
+              <button onclick="alert('Calling ' + activeJob.providerPhone + '...')" class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm shadow">📞</button>
+            </div>
+
+            <!-- Consumed Parts (Strict 0% Platform Commission) -->
+            ${activeJob.parts.length > 0 ? `
+              <div class="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-1 text-xs">
+                <div class="flex justify-between font-bold text-slate-800">
+                  <span>${t('materialsCharge')} (০% প্ল্যাটফর্ম ফি)</span>
+                  <span class="text-emerald-700">৳ ${bnNum(activeJob.materialsAmount)}</span>
+                </div>
+                ${activeJob.parts.map(p => `
+                  <div class="flex justify-between text-slate-500 text-[11px]">
+                    <span>• ${p.name} (${bnNum(p.qty)}x)</span>
+                    <span>৳ ${bnNum(p.price)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- Total Price & Receipt CTA -->
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+              <div>
+                <span class="text-[10px] text-slate-400 block">${t('totalPayable')} [${activeJob.paymentMethod}]</span>
+                <span class="text-emerald-700 font-bold text-lg">
+                  ৳ ${bnNum(activeJob.laborAmount + activeJob.urgencyFee + activeJob.materialsAmount)}
+                </span>
+              </div>
+              <button onclick="alert(currentLang==='bn' ? 'অফিসিয়াল ইনভয়েস SC-2026-000101 ডাউনলোড হয়েছে!' : 'Invoice SC-2026-000101 Downloaded!'); setScreen('catalog')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow">
+                ${currentLang === 'bn' ? 'রসিদ দেখুন' : 'View Receipt'}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Screen: Provider Dashboard (Technician Portal - Fix Issue 6)
+    function renderProviderHome() {
+      return `
+        <!-- Top App Bar with Clear Active Role Indicator (Fix Issue 6) -->
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-b border-slate-200 sticky top-0 z-30">
+          <div class="flex items-center space-x-2">
+            <div class="w-9 h-9 rounded-full overflow-hidden border border-amber-500 shadow-sm">
+              <img src="assets/avatars/ac_technician.jpg" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <div class="flex items-center space-x-1">
+                <span class="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-md">
+                  🛠️ ${currentLang === 'bn' ? 'কারিগর ড্যাশবোর্ড' : 'Technician Portal'}
+                </span>
+              </div>
+              <div class="font-bold text-xs text-slate-900 mt-0.5">মোঃ রফিকুল ইসলাম</div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <button onclick="toggleRole()" title="Switch to Customer Booking Portal" class="px-2.5 py-1 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-lg border border-emerald-300 hover:bg-emerald-100 transition flex items-center gap-1">
+              <span>👤</span>
+              <span>${currentLang === 'bn' ? 'গ্রাহক মোড' : 'Seeker'}</span>
+            </button>
+            <button onclick="toggleLang()" class="px-2 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-lg">
+              ${currentLang === 'bn' ? 'EN' : 'বাং'}
+            </button>
+          </div>
+        </div>
+
+        <div class="p-4 space-y-3 pb-16">
+          <!-- Availability Online/Offline Toggle -->
+          <div class="p-3 bg-white rounded-2xl border border-slate-200 flex items-center justify-between shadow-sm">
+            <div class="flex items-center space-x-2">
+              <div class="w-3 h-3 rounded-full ${isProviderOnline ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}"></div>
+              <div>
+                <h5 class="font-bold text-xs text-slate-800">${isProviderOnline ? t('onlineStatus') : t('offlineStatus')}</h5>
+                <p class="text-[10px] text-slate-400">${isProviderOnline ? 'নতুন কাজের অনুরোধ আসবে' : 'কাজের অনুরোধ বন্ধ'}</p>
+              </div>
+            </div>
+            <input type="checkbox" ${isProviderOnline ? 'checked' : ''} onchange="isProviderOnline = this.checked; render()" class="w-5 h-5 accent-emerald-600 cursor-pointer">
+          </div>
+
+          <!-- Provider Earnings & Wallet -->
+          <div class="p-3.5 bg-gradient-to-r from-emerald-800 to-teal-900 text-white rounded-2xl shadow-md flex justify-between items-center">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-lg">💰</div>
+              <div>
+                <span class="text-[10px] text-emerald-200 block font-semibold">উপার্জন ওয়ালেট (Wallet Balance)</span>
+                <span class="text-base font-bold">৳ ১,৬২০ (ক্যাশআউট যোগ্য)</span>
+              </div>
+            </div>
+            <button onclick="alert('বিকাশ ক্যাশআউট রিকোয়েস্ট সফল হয়েছে!')" class="px-3 py-1.5 bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1">
+              বিকাশ ➔
+            </button>
+          </div>
+
+          <!-- Earnings Summary -->
+          <div class="grid grid-cols-3 gap-2">
+            <div class="p-3 bg-white rounded-2xl border border-slate-200 shadow-sm text-center">
+              <span class="text-[10px] text-slate-400 block">${t('todayEarnings')}</span>
+              <span class="text-emerald-700 font-bold text-sm">৳ ${bnNum(1620)}</span>
+            </div>
+            <div class="p-3 bg-white rounded-2xl border border-slate-200 shadow-sm text-center">
+              <span class="text-[10px] text-slate-400 block">${t('completedJobs')}</span>
+              <span class="text-slate-800 font-bold text-sm">${bnNum(3)} টি</span>
+            </div>
+            <div class="p-3 bg-white rounded-2xl border border-slate-200 shadow-sm text-center">
+              <span class="text-[10px] text-slate-400 block">রেটিং</span>
+              <span class="text-amber-500 font-bold text-sm">★ 4.9</span>
+            </div>
+          </div>
+
+          <!-- Active Assigned Job Card -->
+          <div class="p-4 bg-white rounded-2xl border-2 border-emerald-500 shadow-sm space-y-3">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded">
+                স্ট্যাটাস: ${activeJob.status}
+              </span>
+              <span class="text-xs font-bold text-slate-400">#${activeJob.bookingId}</span>
+            </div>
+
+            <div>
+              <h4 class="font-bold text-sm text-slate-900">${activeJob.serviceName}</h4>
+              <p class="text-xs text-slate-600">👤 ${activeJob.customerName}</p>
+              <p class="text-xs text-slate-400">📍 ${activeJob.address}</p>
+            </div>
+
+            <!-- Attached Parts Breakdown -->
+            ${activeJob.parts.length > 0 ? `
+              <div class="p-2.5 bg-slate-50 rounded-xl space-y-1 text-xs">
+                <span class="font-bold text-slate-700 text-[11px] block">যুক্ত করা যন্ত্রাংশ:</span>
+                ${activeJob.parts.map(p => `
+                  <div class="flex justify-between text-slate-500 text-[11px]">
+                    <span>• ${p.name}</span>
+                    <span>৳ ${bnNum(p.price)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- State Machine Controls -->
+            <div class="grid grid-cols-2 gap-2 pt-2">
+              <button onclick="openAddPartsModal()" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl border border-slate-200">
+                + ${t('addParts')}
+              </button>
+              <button onclick="advanceJobStatus()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow">
+                ${activeJob.status === 'Accepted' ? t('startTravel') : activeJob.status === 'OnTheWay' ? t('markArrived') : activeJob.status === 'Arrived' ? t('startWork') : t('completeJob')}
+              </button>
+            </div>
+          </div>
+
+          <!-- Incoming Job Radar Simulation Button -->
+          <button onclick="simulateIncomingRequest()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-white font-bold text-xs rounded-xl shadow-md">
+            📡 ${currentLang === 'bn' ? 'নতুন কাজের অ্যালার্ট টেস্ট করুন (৩০ সে.)' : 'Test Incoming Job Alert (30s)'}
+          </button>
+        </div>
+
+        <!-- Add Parts Modal Overlay -->
+        <div id="parts-modal" class="hidden absolute inset-0 bg-black/50 z-50 flex flex-col justify-end">
+          <div class="bg-white p-5 rounded-t-3xl space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+              <h3 class="font-bold text-slate-900 text-sm">${t('addParts')}</h3>
+              <button onclick="closeAddPartsModal()" class="text-slate-400 text-sm">✕</button>
+            </div>
+
+            <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-800 font-semibold">
+              ${t('partsBanner')}
+            </div>
+
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">যন্ত্রাংশের নাম</label>
+              <input id="part-name-input" type="text" value="ক্যাপাসিটর (45uF Dual Run Capacitor)" class="w-full border border-slate-200 rounded-xl p-2 text-xs">
+            </div>
+
+            <div>
+              <label class="text-xs font-bold text-slate-700 block mb-1">মূল্য (টাকা)</label>
+              <input id="part-price-input" type="number" value="450" class="w-full border border-slate-200 rounded-xl p-2 text-xs">
+            </div>
+
+            <button onclick="submitNewPart()" class="w-full py-3 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow">
+              বিলে যোগ করুন
+            </button>
+          </div>
+        </div>
+
+        <!-- Incoming Request Radar Modal with 30s Countdown -->
+        <div id="radar-modal" class="hidden absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div class="bg-white p-5 rounded-3xl w-full text-center space-y-3 shadow-2xl">
+            <div class="w-14 h-14 rounded-full bg-emerald-100 border-2 border-emerald-500 text-emerald-700 text-2xl flex items-center justify-center mx-auto animate-bounce">
+              ⚡
+            </div>
+            <h3 class="font-bold text-base text-slate-900">নতুন কাজের অনুরোধ!</h3>
+            <p class="text-xs text-slate-500">শর্ট সার্কিট ও আইপিএস লাইন মেরামত • নিকেতন, গুলশান (১.২ কিমি)</p>
+            <div class="p-3 bg-emerald-50 rounded-xl text-emerald-800 font-bold text-sm">
+              আপনার সম্ভাব্য আয়: ৳ ৫৪০ (মজুরি)
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-2">
+              <button onclick="closeRadarModal()" class="py-2.5 bg-slate-100 text-slate-600 font-bold text-xs rounded-xl">বাতিল</button>
+              <button onclick="acceptRadarJob()" class="py-2.5 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow">গ্রহণ করুন</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Modal Helpers
+    function openAddPartsModal() {
+      const modal = document.getElementById('parts-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+    function closeAddPartsModal() {
+      const modal = document.getElementById('parts-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+    function submitNewPart() {
+      const name = document.getElementById('part-name-input').value;
+      const price = parseFloat(document.getElementById('part-price-input').value) || 0;
+      activeJob.parts.push({ name, qty: 1, price });
+      activeJob.materialsAmount += price;
+      closeAddPartsModal();
+      render();
+    }
+
+    function advanceJobStatus() {
+      if (activeJob.status === 'Accepted') activeJob.status = 'OnTheWay';
+      else if (activeJob.status === 'OnTheWay') activeJob.status = 'Arrived';
+      else if (activeJob.status === 'Arrived') activeJob.status = 'InProgress';
+      else if (activeJob.status === 'InProgress') activeJob.status = 'Completed';
+      render();
+    }
+
+    function simulateIncomingRequest() {
+      const modal = document.getElementById('radar-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+    function closeRadarModal() {
+      const modal = document.getElementById('radar-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+    function acceptRadarJob() {
+      closeRadarModal();
+      activeJob.status = 'Accepted';
+      render();
+    }
+
+    // Backend sync
+    async function syncWithBackend() {
+      try {
+        const resp = await fetch('http://localhost:5242/api/v1/categories');
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data) && data.length > 0) {
+            const badge = document.getElementById('api-status-badge');
+            if (badge) {
+              badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SQL DB Live (Port 5242)';
+              badge.className = 'px-2 py-0.5 text-[10px] font-semibold bg-emerald-950 text-emerald-300 border border-emerald-600 rounded-full flex items-center gap-1';
+            }
+          }
+        }
+      } catch (e) {
+        console.log('Backend sync offline/fallback', e);
+      }
+    }
+
+    // Bootstrap
+    updateTopRoleBanner();
+    render();
+    syncWithBackend();
+  </script>
+</body>
+</html>

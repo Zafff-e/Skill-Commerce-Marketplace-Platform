@@ -1,0 +1,23 @@
+{
+  "name": "kaarigor-frontend",
+  "version": "2.0.0",
+  "private": true,
+  "workspaces": [
+    "shared-design",
+    "react-customer-portal",
+    "angular-provider-portal"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "tsc -p react-customer-portal/tsconfig.json --noEmit && npm run build -w @kaarigor/provider",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "dev:customer": "npm run dev -w @kaarigor/customer",
+    "dev:provider": "npm run start -w @kaarigor/provider",
+    "format": "prettier --write \"{shared-design,react-customer-portal/src,angular-provider-portal/src,scripts,tests}/**/*.{ts,tsx,css,html,mjs}\""
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "tsx": "^4.19.3",
+    "prettier": "^3.5.3"
+  }
+}

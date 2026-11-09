@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.angular/
+.env
+*.local
+.openai/deploy*
+react-customer-portal/public/assets/
+provider-build/
+angular-provider-portal/out-tsc/

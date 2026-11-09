@@ -1,0 +1,490 @@
+{
+  "dataset_name": "Dhaka public skilled-service listings",
+  "schema_version": "1.0",
+  "source_checked_on": "2026-11-02",
+  "timezone": "Asia/Dhaka",
+  "record_count": 15,
+  "individual_listing_count": 10,
+  "service_business_count": 5,
+  "method": "Targeted public-web searches and manual extraction from accessible professional directories and provider websites.",
+  "use_note": "These are public research listings, not independently verified professionals or confirmed SkillCommerce members. Confirm details and obtain onboarding consent before presenting a provider as bookable.",
+  "location_note": "Individual locations are limited to publicly advertised areas, roads or commercial landmarks. Coordinates are unverified and remain null. Office addresses do not establish live position or service radius.",
+  "fields_not_collected": [
+    "private residential details",
+    "identity documents",
+    "personal photos",
+    "ratings",
+    "prices"
+  ],
+  "records": [
+    {
+      "research_id": "DHK-001",
+      "display_name": "Rabbi (AC technician)",
+      "provider_type": "individual_listing",
+      "skills": [
+        "AC repair"
+      ],
+      "area": "Mirpur 2",
+      "listed_location": "Mirpur 2, Dhaka",
+      "location_precision": "area",
+      "source_type": "business_directory",
+      "sources": [
+        {
+          "url": "https://khuji.com/category.php?area=mirpur&cat=AC+repair+service",
+          "supports": "Name, AC repair category and Mirpur 2 location"
+        }
+      ],
+      "notes": "Directory display name is 'AC technician Rabbi mirpur'. No precise map location is supplied.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-002",
+      "display_name": "MD Hanif Howlader (MECCA Electrician)",
+      "provider_type": "individual_listing",
+      "skills": [
+        "Electrical work",
+        "Sanitary work"
+      ],
+      "area": "Middle Azampur, Dakshinkhan",
+      "listed_location": "Middle Azampur, Dakshinkhan, Dhaka",
+      "location_precision": "area",
+      "source_type": "business_directory",
+      "sources": [
+        {
+          "url": "https://www.findglocal.com/BD/Dhaka/200410133164249/MECCA-Electrician",
+          "supports": "Named professional, electrical and sanitary services, public business locality"
+        }
+      ],
+      "notes": "Listed under the MECCA Electrician business name. Locality retained without a building number. Source spells the locality 'Dhakkinkhan'.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-003",
+      "display_name": "Anwar Hossain",
+      "provider_type": "individual_listing",
+      "skills": [
+        "AC repair"
+      ],
+      "area": "East Shewrapara, Mirpur",
+      "listed_location": "East Shewrapara, Mirpur, Dhaka",
+      "location_precision": "area",
+      "source_type": "business_directory",
+      "sources": [
+        {
+          "url": "https://bdyellowpages.net/description/AnwarHossainACMechanic",
+          "supports": "Name, AC mechanic designation and location"
+        }
+      ],
+      "notes": "Directory title is 'Anwar Hossain (AC Mechanic)'. Building number omitted from this research dataset.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-004",
+      "display_name": "MD. Anik",
+      "provider_type": "individual_listing",
+      "skills": [
+        "AC repair"
+      ],
+      "area": "Dhanmondi 7/A",
+      "listed_location": "Rowshan Ara Refrigeration Works, Dhanmondi 7/A, Dhaka",
+      "location_precision": "workshop_and_road",
+      "source_type": "business_directory",
+      "sources": [
+        {
+          "url": "https://bdyellowpages.net/description/MDAnik",
+          "supports": "Name and workshop location"
+        },
+        {
+          "url": "https://bdyellowpages.net/type/ac-mechanic",
+          "supports": "AC mechanic category"
+        }
+      ],
+      "notes": "The individual profile supplies the workshop address. The category listing supplies the trade classification.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-005",
+      "display_name": "Azizur Rahaman Shahin",
+      "provider_type": "individual_listing",
+      "skills": [
+        "Plumbing"
+      ],
+      "area": "Azampur, Uttara",
+      "listed_location": "AB Super Market, Azampur, Uttara, Dhaka",
+      "location_precision": "commercial_landmark",
+      "source_type": "business_directory",
+      "sources": [
+        {
+          "url": "https://bdyellowpages.net/description/AzizurRahamanShahinPlumberMechanic",
+          "supports": "Name, plumber mechanic designation and public business location"
+        }
+      ],
+      "notes": "Directory title includes 'Plumber Mechanic'.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-006",
+      "display_name": "Mosharaf Hossain",
+      "provider_type": "individual_listing",
+      "skills": [
+        "Plumbing"
+      ],
+      "area": "Mouchak",
+      "listed_location": "New Circular Road, Mouchak, Dhaka",
+      "location_precision": "road",
+      "source_type": "business_directory",
+      "sources": [
+        {
+          "url": "https://bdyellowpages.net/description/MosharafHossain",
+          "supports": "Named professional profile"
+        },
+        {
+          "url": "https://bdyellowpages.net/type/plumber-mechanic",
+          "supports": "Plumber mechanic category and New Circular Road location"
+        }
+      ],
+      "notes": "Trade classification comes from the plumber mechanic category listing.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-007",
+      "display_name": "Alim Miah",
+      "provider_type": "individual_listing",
+      "skills": [
+        "Painting"
+      ],
+      "area": "Shahjadpur, Badda",
+      "listed_location": "Shahjadpur Road, Badda, Dhaka",
+      "location_precision": "road",
+      "source_type": "business_directory",
+      "sources": [
+        {
+          "url": "https://bdyellowpages.net/description/AlimMiahPainter",
+          "supports": "Name, painter designation and location"
+        }
+      ],
+      "notes": "Source spelling 'Shahjadpur' retained.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-008",
+      "display_name": "MD. Mustofa",
+      "provider_type": "individual_listing",
+      "skills": [
+        "Painting"
+      ],
+      "area": "Niketon, Gulshan-1",
+      "listed_location": "Road 6, Niketon, Gulshan-1, Dhaka",
+      "location_precision": "road",
+      "source_type": "business_directory",
+      "sources": [
+        {
+          "url": "https://bdyellowpages.net/description/MDMustofaPainter",
+          "supports": "Name, painter designation and location"
+        }
+      ],
+      "notes": "Source lists Road-6, Niketon, Gulshan-1.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-009",
+      "display_name": "Ainal Hossen",
+      "provider_type": "individual_listing",
+      "skills": [
+        "Carpentry"
+      ],
+      "area": "Zigatola, Dhanmondi",
+      "listed_location": "Zigatola, Dhanmondi, Dhaka",
+      "location_precision": "area",
+      "source_type": "business_directory",
+      "sources": [
+        {
+          "url": "https://bdyellowpages.net/description/AinalHossenCarpenters",
+          "supports": "Named carpenter profile"
+        },
+        {
+          "url": "https://bdyellowpages.net/type/carpenters",
+          "supports": "Carpentry category and locality"
+        }
+      ],
+      "notes": "Directory title is 'Ainal Hossen (Carpenters)'.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-010",
+      "display_name": "Mamun",
+      "provider_type": "individual_listing",
+      "skills": [
+        "Carpentry"
+      ],
+      "area": "Nobin Bagh, Khilgaon",
+      "listed_location": "Nobin Bagh, Khilgaon, Dhaka",
+      "location_precision": "area",
+      "source_type": "business_directory",
+      "sources": [
+        {
+          "url": "https://bdyellowpages.net/type/carpenters",
+          "supports": "Mamun (Carpenters) listing and locality"
+        }
+      ],
+      "notes": "Category page read successfully. The separate profile page could not be retrieved; this record relies on the category listing.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-011",
+      "display_name": "AC Expert",
+      "provider_type": "service_business",
+      "skills": [
+        "AC servicing",
+        "AC installation",
+        "Appliance repair"
+      ],
+      "area": "Sector 14, Uttara",
+      "listed_location": "House 47, Road 11, Sector 14, Uttara, Dhaka",
+      "location_precision": "business_street_address",
+      "source_type": "provider_website",
+      "sources": [
+        {
+          "url": "https://www.acexpertbd.com/contact",
+          "supports": "Corporate office address and listed service categories"
+        }
+      ],
+      "notes": "Address is the corporate office. The site also lists other service points; they are not separate providers in this dataset.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-012",
+      "display_name": "Electric And Plumbing Service",
+      "provider_type": "service_business",
+      "skills": [
+        "Electrical work",
+        "Plumbing"
+      ],
+      "area": "Uttar Khan / Uttara",
+      "listed_location": "2449, 1 Uttar Khan Mazar Rd, Dhaka 1230 Uttara 1230",
+      "location_precision": "business_street_address",
+      "source_type": "provider_website",
+      "sources": [
+        {
+          "url": "https://electric-and-plumbing.localo.site/",
+          "supports": "Business name, advertised services and public contact address"
+        }
+      ],
+      "notes": "Address retained as published. Electrical services are described in the page text; plumbing is advertised in the business name.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-013",
+      "display_name": "Service Station",
+      "provider_type": "service_business",
+      "skills": [
+        "Carpentry"
+      ],
+      "area": "Sankar, Dhanmondi",
+      "listed_location": "73 Sankar, Dhanmondi, Dhaka 1205",
+      "location_precision": "business_street_address",
+      "source_type": "provider_website",
+      "sources": [
+        {
+          "url": "https://servicestationbd.com/service/carpentry-service",
+          "supports": "Carpentry service and published business contact address"
+        }
+      ],
+      "notes": "Multi-service platform/business listing, not a named individual carpenter.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-014",
+      "display_name": "CleaningBD",
+      "provider_type": "service_business",
+      "skills": [
+        "Home cleaning",
+        "Office cleaning",
+        "Deep cleaning"
+      ],
+      "area": "Uttor Badda",
+      "listed_location": "Sha-41, 2nd Floor, Hossain Market, Uttor Badda, Dhaka 1212",
+      "location_precision": "business_street_address",
+      "source_type": "provider_website",
+      "sources": [
+        {
+          "url": "https://cleaningbd.com/contact",
+          "supports": "Office address and advertised cleaning services"
+        }
+      ],
+      "notes": "Office location is distinct from the business's wider service coverage.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    },
+    {
+      "research_id": "DHK-015",
+      "display_name": "Star Tech - Elephant Road Service Center",
+      "provider_type": "service_business",
+      "skills": [
+        "Laptop repair",
+        "Desktop repair"
+      ],
+      "area": "New Elephant Road",
+      "listed_location": "Level 3, Minita Plaza, 54 New Elephant Road, Dhaka",
+      "location_precision": "business_service_center",
+      "source_type": "provider_website",
+      "sources": [
+        {
+          "url": "https://service.startech.com.bd/",
+          "supports": "Elephant Road service-center address and laptop/desktop services"
+        }
+      ],
+      "notes": "One named service-center location. Other branches are not counted as additional providers.",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": null,
+      "longitude": null,
+      "source_checked_on": "2026-11-02",
+      "verification_status": "public_listing_only",
+      "identity_and_skills_verified_by_researcher": false,
+      "current_availability": "unknown",
+      "platform_registration_status": "not_established",
+      "onboarding_consent_status": "not_obtained",
+      "suggested_import_status": "ResearchLead"
+    }
+  ]
+}

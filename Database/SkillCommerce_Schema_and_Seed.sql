@@ -247,3 +247,53 @@ INSERT INTO [dbo].[SkillSets] ([CategoryId], [SkillName], [StandardRatePerHour])
 (3, 'Circuit Breaker & DB Board Wiring', 900.00),
 (4, 'Concealed Pipe Leakage Detection', 1000.00);
 GO
+
+-- 4. SAMPLE USERS (Admin, Customer, Providers)
+IF NOT EXISTS (SELECT 1 FROM [dbo].[Users] WHERE [Email] = 'zafir@skillcommerce.com')
+BEGIN
+    INSERT INTO [dbo].[Users] ([FullName], [Email], [NormalizedEmail], [PhoneNumber], [PasswordHash], [RoleId], [IsActive])
+    VALUES 
+    (N'A.H.M. Zafir Hasan', 'zafir@skillcommerce.com', 'ZAFIR@SKILLCOMMERCE.COM', '+8801700000001', 'AQAAAAEAACcQAAAAEHashedAdminPass!', 1, 1),
+    (N'তানজিলা হক (Tanjila Haque)', 'tanjila@customer.com', 'TANIJILA@CUSTOMER.COM', '+8801700001122', 'AQAAAAEAACcQAAAAEHashedCustPass!', 2, 1),
+    (N'মোঃ রফিকুল ইসলাম (Rafiqul)', 'rafiqul@pro.com', 'RAFIQUL@PRO.COM', '+8801711223344', 'AQAAAAEAACcQAAAAEHashedProPass!', 3, 1),
+    (N'তানভীর আহমেদ (Tanveer)', 'tanveer@pro.com', 'TANVEER@PRO.COM', '+8801819876543', 'AQAAAAEAACcQAAAAEHashedProPass!', 3, 1),
+    (N'আব্দুল করিম (Karim Mistri)', 'karim@pro.com', 'KARIM@PRO.COM', '+8801912345678', 'AQAAAAEAACcQAAAAEHashedProPass!', 3, 1);
+END;
+GO
+
+-- 5. PROFESSIONAL PROFILES
+IF NOT EXISTS (SELECT 1 FROM [dbo].[ProfessionalProfiles] WHERE [UserId] = 3)
+BEGIN
+    INSERT INTO [dbo].[ProfessionalProfiles] ([UserId], [Bio], [ExperienceYears], [ServiceAreaCity], [BaseVisitingCharge], [AverageRating], [TotalReviewsCount], [IsVerified], [IsAvailable])
+    VALUES
+    (3, N'১০ বছরের অভিজ্ঞ ইনভার্টার এসি ও রেফ্রিজারেটর টেকনিশিয়ান। বিআইএসইডব্লিউ সার্টিফাইড।', 10, N'ঢাকা (মিরপুর, বনানী, গুলশান)', 300.00, 4.90, 142, 1, 1),
+    (4, N'শর্ট সার্কিট বিশেষজ্ঞ ও আইপিএস/ডিবি বোর্ড ইনস্টলেশন স্পেশালিস্ট।', 7, N'ঢাকা (ধানমন্ডি, মোহাম্মদপুর)', 250.00, 4.80, 98, 1, 1),
+    (5, N'প্লাম্বিং, স্যানিটারি ফিটিংস এবং পানির পাম্প মেরামতকারী।', 12, N'ঢাকা (উত্তরা, এয়ারপোর্ট)', 300.00, 4.70, 86, 1, 1);
+END;
+GO
+
+-- 6. PROFESSIONAL SKILLS
+IF NOT EXISTS (SELECT 1 FROM [dbo].[ProfessionalSkills] WHERE [ProfileId] = 1 AND [SkillId] = 1)
+BEGIN
+    INSERT INTO [dbo].[ProfessionalSkills] ([ProfileId], [SkillId], [HourlyRate], [YearsOfExperience])
+    VALUES
+    (1, 1, 800.00, 10),
+    (1, 2, 1200.00, 8),
+    (2, 6, 900.00, 7),
+    (3, 7, 1000.00, 12);
+END;
+GO
+
+-- 7. SERVICE BOOKING & REPAIR PARTS
+IF NOT EXISTS (SELECT 1 FROM [dbo].[ServiceBookings] WHERE [BookingReference] = 'SC-2026-1001')
+BEGIN
+    INSERT INTO [dbo].[ServiceBookings] 
+    ([BookingReference], [CustomerId], [ProfessionalId], [SkillId], [ScheduledDate], [ServiceAddress], [Status], [CustomerNotes], [EstimatedHours], [LaborCost], [PartsTotalCost], [TotalBillAmount])
+    VALUES
+    ('SC-2026-1001', 2, 1, 1, DATEADD(hour, 2, SYSUTCDATETIME()), N'বাড়ি ১২, রোড ৫, বনানী, ঢাকা', 'ON_THE_WAY', N'এসি থেকে ঠান্ডা বাতাস আসছে না এবং গ্যাস লিকেজ হতে পারে।', 2.0, 800.00, 450.00, 1250.00);
+
+    INSERT INTO [dbo].[PartsForRepair] ([BookingId], [PartName], [Quantity], [UnitPrice], [WarrantyMonths])
+    VALUES
+    (1, N'ক্যাপাসিটর (45uF Capacitor)', 1, 450.00, 6);
+END;
+GO

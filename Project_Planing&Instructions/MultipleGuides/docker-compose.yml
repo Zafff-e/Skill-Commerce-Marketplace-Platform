@@ -1,0 +1,123 @@
+services:
+  # ============================================================================
+  # 1. RELATIONAL DATABASE: Microsoft SQL Server 2022
+  # ============================================================================
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: skillcommerce_sqlserver
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SkillCommerce@Pass2026!
+      - MSSQL_PID=Developer
+      - MSSQL_TCP_PORT=1433
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - ./relational/migrations:/docker-migrations
+      - ./relational/seeds:/docker-seeds
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'SkillCommerce@Pass2026!' -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 25s
+    networks:
+      - skillcommerce_net
+
+  # ============================================================================
+  # 2. DOCUMENT DATABASE: MongoDB 7.0
+  # ============================================================================
+  mongodb:
+    image: mongo:7.0
+    container_name: skillcommerce_mongodb
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=MongoSkillCommerce2026!
+      - MONGO_INITDB_DATABASE=skillcommerce_catalog
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./document/collections:/docker-entrypoint-initdb.d/collections:ro
+      - ./document/indexes:/docker-entrypoint-initdb.d/indexes:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh -u mongoadmin -p 'MongoSkillCommerce2026!' --authenticationDatabase admin --eval 'db.adminCommand(\"ping\")' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - skillcommerce_net
+
+  # ============================================================================
+  # 3. CACHE & IN-MEMORY STORE: Redis 7
+  # ============================================================================
+  redis:
+    image: redis:7.2-alpine
+    container_name: skillcommerce_redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass RedisSkillCommerce2026!
+      --appendonly yes
+      --maxmemory 512mb
+      --maxmemory-policy volatile-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./cache/scripts:/lua-scripts:ro
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "RedisSkillCommerce2026!", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    networks:
+      - skillcommerce_net
+
+  # ============================================================================
+  # 4. SEARCH & DISCOVERY ENGINE: Elasticsearch 8
+  # ============================================================================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    container_name: skillcommerce_elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.name=skillcommerce-search-cluster
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+      - ./search/mappings:/usr/share/elasticsearch/mappings:ro
+      - ./search/pipelines:/usr/share/elasticsearch/pipelines:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 8
+      start_period: 30s
+    networks:
+      - skillcommerce_net
+
+volumes:
+  sqlserver_data:
+    name: skillcommerce_sqlserver_data
+  mongodb_data:
+    name: skillcommerce_mongodb_data
+  redis_data:
+    name: skillcommerce_redis_data
+  elasticsearch_data:
+    name: skillcommerce_elasticsearch_data
+
+networks:
+  skillcommerce_net:
+    name: skillcommerce_network
+    driver: bridge

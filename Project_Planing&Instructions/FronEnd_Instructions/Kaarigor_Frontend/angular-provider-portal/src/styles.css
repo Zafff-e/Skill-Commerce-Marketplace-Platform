@@ -1,0 +1,1931 @@
+.provider-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+  padding: 20px 4%;
+  height: 80px;
+  background: var(--surface);
+}
+.provider-nav .brand {
+  font-size: 27px;
+}
+.brand-dot {
+  color: var(--orange);
+  margin-left: -9px;
+}
+.portal-label {
+  font-size: 8px;
+  letter-spacing: 2px;
+  padding-left: 20px;
+  border-left: 1px solid var(--line);
+  color: var(--muted);
+}
+.provider-nav nav {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-left: auto;
+  font-size: 11px;
+}
+.provider-nav nav a.active {
+  color: var(--green);
+  font-weight: 700;
+}
+.provider-nav button {
+  background: transparent;
+  border: 0;
+  min-height: 40px;
+  font-size: 11px;
+}
+.provider-nav button:last-child {
+  border-left: 1px solid var(--line);
+  padding-left: 20px;
+  color: var(--muted);
+}
+.registration-page {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.85fr) minmax(500px, 1.35fr);
+  min-height: calc(100dvh - 140px);
+  max-width: 1440px;
+  margin: auto;
+}
+.registration-story {
+  position: relative;
+  padding: 43px 0 25px 12%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+}
+.registration-story > .eyebrow {
+  font-size: 8px;
+  color: #8d8264;
+  letter-spacing: 1.5px;
+}
+.story-heading {
+  margin-top: 55px;
+  position: relative;
+  z-index: 2;
+}
+.story-heading h1 {
+  font-size: 51px;
+  line-height: 1.06;
+  letter-spacing: -2px;
+  max-width: 400px;
+}
+.story-heading h1 em {
+  color: #7d8b67;
+  font-weight: 400;
+}
+.story-heading p {
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 260px;
+  margin-top: 17px;
+}
+.portrait-scene {
+  position: relative;
+  min-height: 350px;
+  flex: 1;
+}
+.portrait-orbit {
+  position: absolute;
+  bottom: -55px;
+  left: -10%;
+  width: 390px;
+  height: 390px;
+  border-radius: 50%;
+  background: #e7e9da;
+  box-shadow:
+    0 0 0 24px #e7e9da40,
+    0 0 0 25px #c6d0ba28;
+}
+.portrait-orbit:after {
+  content: '';
+  position: absolute;
+  inset: -45px;
+  border: 1px solid #c6d0ba40;
+  border-radius: 50%;
+}
+.portrait-scene > img {
+  position: absolute;
+  height: 410px;
+  width: 330px;
+  object-fit: contain;
+  bottom: -68px;
+  left: -7px;
+}
+.portrait-label {
+  position: absolute;
+  left: -10px;
+  bottom: 8px;
+  display: grid;
+  gap: 9px;
+  padding: 14px 17px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  box-shadow: var(--shadow);
+  transform: rotate(-4deg);
+}
+.portrait-label small {
+  font-size: 7px;
+  color: #8d8264;
+  letter-spacing: 1.5px;
+}
+.portrait-label strong {
+  font-family: 'DM Serif Display', Georgia, 'Hind Siliguri', serif;
+  font-size: 18px;
+  font-weight: 400;
+}
+.story-bottom {
+  display: flex;
+  gap: 17px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  max-width: 320px;
+  position: relative;
+  background: var(--paper);
+}
+.story-bottom > span {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 25px;
+  font-style: italic;
+  color: #b8aa81;
+}
+.story-bottom p {
+  font-size: 10px;
+  color: var(--muted);
+  max-width: 240px;
+}
+.registration-form-side {
+  padding: 55px 7% 42px 4%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.signup-prelude {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+.signup-prelude > span {
+  font-size: 7px;
+  letter-spacing: 1.6px;
+  color: var(--muted);
+}
+.signup-prelude a {
+  font-size: 9px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.signup-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 20px 45px #243b2910;
+}
+.signup-heading .eyebrow {
+  font-size: 8px;
+  letter-spacing: 1.3px;
+  color: #8b8e70;
+}
+.signup-heading h2 {
+  font-size: 39px;
+  margin-top: 13px;
+  letter-spacing: -1.5px;
+}
+.signup-heading p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 9px;
+}
+.signup-steps {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  margin: 25px 0;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 21px;
+}
+.signup-steps li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  color: var(--muted);
+}
+.signup-steps b {
+  font-size: 9px;
+  font-weight: 400;
+}
+.signup-steps li > span {
+  width: 21px;
+  height: 21px;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 9px;
+}
+.signup-steps .current {
+  color: var(--green);
+}
+.signup-steps .current b {
+  font-weight: 700;
+}
+.signup-steps .current > span,
+.signup-steps .done > span {
+  background: var(--green);
+  color: var(--paper);
+  border-color: var(--green);
+}
+.field-caption {
+  font-size: 11px;
+  font-weight: 600;
+}
+.account-choice {
+  border: 1px solid #bdc8ac;
+  background: #f2f4e9;
+  border-radius: 9px;
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  padding: 12px 15px;
+  margin-top: 9px;
+  color: #2a4937;
+}
+.choice-icon {
+  font-size: 27px;
+  color: #738665;
+}
+.account-choice > div {
+  flex: 1;
+}
+.account-choice b {
+  font-size: 12px;
+  font-weight: 600;
+  display: block;
+}
+.account-choice small {
+  display: block;
+  font-size: 9px;
+  color: #7b856d;
+  margin-top: 5px;
+}
+.choice-check {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #64815a;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+}
+.signup-card label {
+  font-size: 10px;
+  gap: 8px;
+}
+.signup-card input,
+.signup-card select,
+.signup-card textarea {
+  font-size: 11px;
+  padding: 11px 12px;
+  min-height: 43px;
+}
+.signup-card .field-grid {
+  gap: 17px 15px;
+}
+.signup-card .stack {
+  gap: 19px;
+}
+.password-field {
+  position: relative;
+}
+.password-field input {
+  padding-right: 42px;
+}
+.password-field button {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  width: 38px;
+  height: 37px;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-size: 19px;
+}
+.signup-card .check-label {
+  font-size: 10px;
+  line-height: 1.7;
+  font-weight: 400;
+  gap: 10px;
+}
+.signup-card .check-label input {
+  padding: 0;
+  min-height: 16px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.demo-ack {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.demo-ack a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: #786948;
+}
+.register-submit {
+  font-size: 12px;
+  min-height: 46px;
+}
+.register-submit span {
+  margin-left: auto;
+}
+.form-signin {
+  text-align: center;
+  font-size: 10px;
+  color: var(--muted);
+}
+.form-signin a {
+  font-weight: 600;
+  color: #6e714d;
+}
+.signup-footnote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 9px;
+  margin-top: 21px;
+  color: var(--muted);
+}
+.shield-tiny {
+  border: 1px solid #abb397;
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 7px;
+  color: #788b67;
+}
+.signup-card .invalid {
+  border-color: #b35938;
+  background: #fff4eb;
+}
+.provider-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  min-height: 65px;
+  padding: 20px 4%;
+  border-top: 1px solid var(--line);
+  font-size: 9px;
+  color: var(--muted);
+}
+.provider-footer > span:last-child {
+  font-size: 8px;
+}
+.task-selection {
+  display: grid;
+  gap: 13px;
+}
+.task-selection h3 {
+  font-size: 14px;
+}
+.task-selection > small {
+  font-size: 10px;
+  color: var(--muted);
+}
+.signup-card .task-opt {
+  display: flex;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  gap: 10px;
+  font-weight: 400;
+  font-size: 11px;
+}
+.task-opt input {
+  width: 16px;
+  min-height: 16px;
+}
+.task-opt b {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+}
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 5px;
+}
+.form-actions .btn {
+  font-size: 11px;
+}
+.zone-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.zone-chips .pill {
+  background: transparent;
+  font-size: 9px;
+  min-height: 34px;
+}
+.zone-chips .active {
+  background: var(--green);
+  color: var(--paper);
+}
+.territory-map {
+  background: var(--green-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  height: 280px;
+  display: flex;
+  justify-content: center;
+}
+.territory-map svg {
+  height: 100%;
+  width: 100%;
+}
+.territory-map path {
+  fill: #d5dfcb;
+  stroke: var(--paper);
+  stroke-width: 3;
+}
+.territory-map text {
+  font-family: 'DM Sans', 'Hind Siliguri', sans-serif;
+  fill: #506e4d;
+  font-size: 11px;
+  pointer-events: none;
+}
+.territory-map g {
+  cursor: pointer;
+}
+.territory-map .chosen path {
+  fill: #9caf8d;
+  stroke: #466b43;
+  stroke-width: 2;
+}
+.territory-map g:focus-visible {
+  outline: 0;
+}
+.territory-map g:focus-visible path {
+  stroke: #d77a47;
+  stroke-width: 5;
+}
+.signup-card .upload-tile {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  text-align: center;
+  padding: 22px 12px;
+  border: 1px dashed var(--line);
+  background: var(--paper);
+  border-radius: 8px;
+  font-size: 11px;
+  min-width: 0;
+}
+.upload-tile > span {
+  font-size: 25px;
+  color: #7c906a;
+}
+.upload-tile small {
+  font-size: 8px;
+  color: var(--muted);
+}
+.upload-tile input {
+  font-size: 8px;
+  width: 100%;
+  padding: 8px;
+  min-height: 30px;
+}
+.upload-tile b {
+  font-size: 9px;
+  font-weight: 400;
+  word-break: break-all;
+}
+.success-card {
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+  text-align: center;
+  padding: 50px 30px;
+}
+.success-card h2 {
+  font-size: 43px;
+  line-height: 1.08;
+}
+.success-card h2 em {
+  font-weight: 400;
+  color: #6d8461;
+}
+.success-card p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.success-icon {
+  display: grid;
+  place-items: center;
+  width: 57px;
+  height: 57px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 25px;
+  color: var(--green);
+}
+.workspace-shell {
+  display: grid;
+  grid-template-columns: 245px 1fr;
+  min-height: calc(100dvh - 145px);
+  max-width: 1600px;
+  margin: auto;
+}
+.workspace-sidebar {
+  border-right: 1px solid var(--line);
+  padding: 35px 23px;
+  display: flex;
+  flex-direction: column;
+}
+.workspace-sidebar > .eyebrow {
+  font-size: 7px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.provider-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 30px 0;
+}
+.provider-mini img {
+  width: 48px;
+  height: 55px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 8px;
+  background: #e2e6d4;
+}
+.provider-mini b {
+  font-size: 11px;
+  display: block;
+}
+.provider-mini small {
+  font-size: 8px;
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+}
+.workspace-sidebar nav {
+  display: grid;
+  gap: 8px;
+}
+.workspace-sidebar nav button {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-size: 11px;
+}
+.workspace-sidebar nav button > span {
+  font-size: 17px;
+  line-height: 1;
+}
+.workspace-sidebar nav button i {
+  margin-left: auto;
+  font-style: normal;
+  color: var(--muted);
+  font-size: 12px;
+}
+.workspace-sidebar nav button.active {
+  background: var(--green-soft);
+  color: var(--green);
+  font-weight: 600;
+}
+.sidebar-bottom {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  margin-top: auto;
+  padding: 17px;
+}
+.sidebar-bottom .eyebrow {
+  font-size: 7px;
+  letter-spacing: 1px;
+  line-height: 1.5;
+}
+.sidebar-bottom .eyebrow:before {
+  display: none;
+}
+.sidebar-bottom p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 12px 0;
+}
+.sidebar-bottom a {
+  display: block;
+  font-size: 9px;
+  margin-top: 15px;
+  font-weight: 500;
+}
+.workspace-main {
+  padding: 45px 4%;
+  min-width: 0;
+}
+.workspace-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+.workspace-heading .eyebrow {
+  font-size: 8px;
+  color: var(--muted);
+  margin-bottom: 17px;
+}
+.workspace-heading h1 {
+  font-size: 41px;
+  line-height: 1.1;
+}
+.workspace-heading p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.online-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 12px 15px;
+  border-radius: 9px;
+  white-space: nowrap;
+}
+.online-toggle b {
+  font-size: 11px;
+  font-weight: 500;
+  display: block;
+}
+.online-toggle small {
+  font-size: 8px;
+  color: var(--muted);
+  display: block;
+  margin-top: 5px;
+}
+.online-toggle input {
+  width: 17px;
+  min-height: 17px;
+}
+.workspace-notice {
+  margin-bottom: 28px;
+  font-size: 10px;
+}
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.metric-grid article {
+  padding: 23px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: grid;
+  gap: 13px;
+}
+.metric-grid article > span {
+  font-size: 10px;
+  color: var(--muted);
+}
+.metric-grid strong {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 38px;
+  font-weight: 400;
+  letter-spacing: -1px;
+}
+.metric-grid small {
+  font-size: 8px;
+  color: var(--muted);
+}
+.workspace-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+.workspace-section-heading h2 {
+  font-size: 28px;
+}
+.workspace-section-heading .pill {
+  font-size: 9px;
+}
+.job-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+.job-card {
+  padding: 23px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+}
+.job-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.job-heading .eyebrow {
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+.job-heading .badge {
+  font-size: 8px;
+}
+.job-card h3 {
+  font-size: 17px;
+}
+.job-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.job-progress {
+  display: flex;
+  gap: 8px;
+  padding: 22px 0;
+}
+.job-progress span {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 8px;
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  flex: 1;
+  border-radius: 5px;
+}
+.job-progress span.done {
+  background: #b4c6a2;
+  color: #23432d;
+  border-color: #b4c6a2;
+}
+.job-price {
+  display: flex;
+  justify-content: space-between;
+  border-block: 1px solid var(--line);
+  padding: 15px 0;
+  margin-bottom: 20px;
+}
+.job-price span {
+  font-size: 9px;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+}
+.job-price b {
+  font-size: 17px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.job-actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.job-actions .btn {
+  font-size: 9px;
+  padding: 10px 13px;
+  min-height: 37px;
+}
+.completed-note {
+  font-size: 11px;
+  color: var(--green);
+}
+.workspace-panel {
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+}
+.workspace-panel .notice {
+  margin-top: 24px;
+  font-size: 10px;
+}
+.schedule-panel {
+  display: grid;
+  gap: 22px;
+  max-width: 700px;
+}
+.schedule-panel h2 {
+  font-size: 30px;
+}
+.schedule-panel p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.day-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.day-buttons .pill {
+  background: var(--paper);
+  font-size: 11px;
+  min-height: 40px;
+}
+.day-buttons .active {
+  background: var(--green);
+  color: var(--paper);
+}
+.schedule-panel .btn {
+  justify-self: start;
+  font-size: 12px;
+}
+.provider-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #132b2369;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.provider-modal {
+  max-width: 480px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 28px;
+  background: var(--surface);
+}
+.provider-modal .notice {
+  font-size: 11px;
+}
+.admin-page {
+  max-width: 1200px;
+  padding: 55px 35px 80px;
+  margin: auto;
+  min-height: calc(100dvh - 145px);
+}
+.admin-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 30px;
+  margin-top: 35px;
+}
+.verification-queue {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.verification-queue h2 {
+  font-size: 27px;
+  margin-bottom: 25px;
+}
+.queue-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 17px 12px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  text-align: left;
+  margin-bottom: 12px;
+}
+.queue-item.active {
+  background: var(--green-soft);
+  border-color: #afbea0;
+}
+.queue-item b {
+  font-size: 11px;
+  display: block;
+}
+.queue-item small {
+  font-size: 8px;
+  color: var(--muted);
+  display: block;
+  margin-top: 7px;
+}
+.queue-item .badge {
+  font-size: 8px;
+  margin-left: auto;
+}
+.verification-detail {
+  padding: 28px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 12px;
+}
+.verification-detail .workspace-section-heading h2 {
+  font-size: 27px;
+}
+.identity-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 25px 0;
+}
+.identity-comparison > div {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  min-height: 190px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 12px;
+  padding: 20px;
+}
+.identity-comparison img {
+  width: 100px;
+  height: 130px;
+  object-fit: cover;
+  object-position: top;
+}
+.identity-comparison > div > span {
+  font-size: 9px;
+  color: var(--muted);
+}
+.identity-comparison .document-placeholder > span {
+  font-size: 30px;
+  color: #9aa48a;
+}
+.document-placeholder b {
+  font-size: 12px;
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.document-placeholder small {
+  font-size: 8px;
+  color: var(--muted);
+}
+.review-note {
+  font-size: 11px;
+}
+.review-note textarea {
+  font-size: 12px;
+}
+.review-actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+.review-actions .btn {
+  font-size: 10px;
+  padding: 11px 13px;
+}
+.verification-detail .error,
+.verification-detail .notice {
+  margin-top: 15px;
+  font-size: 11px;
+}
+[data-theme='dark'] .portrait-orbit {
+  background: #344b36;
+  box-shadow: 0 0 0 24px #344b3640;
+}
+[data-theme='dark'] .story-heading h1 em {
+  color: #b4c49b;
+}
+[data-theme='dark'] .account-choice {
+  background: #314c37;
+  color: #e1eacf;
+  border-color: var(--line);
+}
+[data-theme='dark'] .account-choice small {
+  color: #b7c5a8;
+}
+[data-theme='dark'] .form-signin a {
+  color: #b8c5a4;
+}
+@media (min-width: 1500px) {
+  .registration-page {
+    min-height: calc(100dvh - 145px);
+  }
+  .portrait-scene {
+    min-height: 430px;
+  }
+  .portrait-scene > img {
+    height: 480px;
+    width: 365px;
+    bottom: -70px;
+  }
+  .registration-form-side {
+    padding-block: 70px;
+  }
+  .signup-card {
+    padding: 38px;
+  }
+}
+@media (max-width: 1050px) {
+  .provider-nav {
+    gap: 15px;
+  }
+  .provider-nav .portal-label {
+    font-size: 7px;
+    letter-spacing: 1px;
+    padding-left: 15px;
+  }
+  .provider-nav nav {
+    gap: 15px;
+    font-size: 10px;
+  }
+  .registration-page {
+    grid-template-columns: minmax(260px, 0.8fr) minmax(430px, 1.25fr);
+  }
+  .registration-story {
+    padding-left: 10%;
+    padding-top: 35px;
+  }
+  .registration-story > .eyebrow {
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+  .story-heading h1 {
+    font-size: 42px;
+  }
+  .story-heading {
+    margin-top: 50px;
+  }
+  .portrait-orbit {
+    width: 300px;
+    height: 300px;
+    left: -20px;
+  }
+  .portrait-scene > img {
+    width: 290px;
+    height: 365px;
+    left: -30px;
+    bottom: -40px;
+  }
+  .portrait-label {
+    left: -14px;
+    bottom: 16px;
+    padding: 12px;
+  }
+  .portrait-label strong {
+    font-size: 16px;
+  }
+  .portrait-label small {
+    font-size: 6px;
+  }
+  .story-bottom {
+    max-width: 235px;
+  }
+  .story-bottom p {
+    font-size: 9px;
+  }
+  .registration-form-side {
+    padding: 45px 7% 35px 4%;
+  }
+  .signup-card {
+    padding: 26px;
+  }
+  .signup-heading h2 {
+    font-size: 34px;
+  }
+  .signup-heading .eyebrow {
+    font-size: 7px;
+  }
+  .signup-prelude > span {
+    display: none;
+  }
+  .signup-prelude {
+    justify-content: flex-end;
+  }
+  .signup-steps {
+    gap: 5px;
+  }
+  .signup-steps li {
+    gap: 5px;
+  }
+  .signup-steps b {
+    font-size: 8px;
+  }
+  .signup-steps li > span {
+    width: 19px;
+    height: 19px;
+    font-size: 8px;
+  }
+  .signup-card .field-grid {
+    gap: 15px 12px;
+  }
+  .signup-card .check-label {
+    font-size: 9px;
+  }
+  .workspace-shell {
+    grid-template-columns: 205px 1fr;
+  }
+  .workspace-sidebar {
+    padding: 30px 17px;
+  }
+  .workspace-main {
+    padding: 35px 4%;
+  }
+  .workspace-heading h1 {
+    font-size: 34px;
+  }
+  .metric-grid {
+    gap: 14px;
+  }
+  .metric-grid article {
+    padding: 19px;
+  }
+  .metric-grid strong {
+    font-size: 32px;
+  }
+  .job-cards {
+    gap: 16px;
+  }
+  .job-card {
+    padding: 19px;
+  }
+  .job-card h3 {
+    font-size: 15px;
+  }
+  .admin-grid {
+    grid-template-columns: 260px 1fr;
+    gap: 20px;
+  }
+  .identity-comparison {
+    gap: 15px;
+  }
+  .verification-detail {
+    padding: 22px;
+  }
+  .verification-queue {
+    padding: 20px;
+  }
+}
+@media (max-width: 800px) {
+  .provider-nav {
+    height: 70px;
+    padding: 15px 25px;
+  }
+  .provider-nav .brand {
+    font-size: 23px;
+  }
+  .provider-nav .portal-label {
+    display: none;
+  }
+  .provider-nav nav {
+    gap: 14px;
+    font-size: 10px;
+  }
+  .provider-nav button:last-child {
+    display: none;
+  }
+  .registration-page {
+    grid-template-columns: 1fr 1.4fr;
+    min-height: calc(100dvh - 135px);
+  }
+  .registration-story {
+    padding-left: 25px;
+    padding-top: 29px;
+  }
+  .registration-story > .eyebrow {
+    font-size: 6px;
+    letter-spacing: 1px;
+    line-height: 1.6;
+    max-width: 170px;
+  }
+  .registration-story > .eyebrow:before {
+    display: none;
+  }
+  .story-heading h1 {
+    font-size: 34px;
+    letter-spacing: -1.2px;
+  }
+  .story-heading p {
+    font-size: 11px;
+    max-width: 200px;
+  }
+  .story-heading {
+    margin-top: 40px;
+  }
+  .portrait-scene {
+    min-height: 290px;
+  }
+  .portrait-scene > img {
+    height: 320px;
+    width: 240px;
+    bottom: -37px;
+    left: -27px;
+  }
+  .portrait-label {
+    left: -10px;
+    bottom: 10px;
+    max-width: 185px;
+  }
+  .portrait-label strong {
+    font-size: 14px;
+  }
+  .portrait-orbit {
+    width: 260px;
+    height: 260px;
+    left: -28px;
+    bottom: 0;
+  }
+  .story-bottom {
+    max-width: 190px;
+    gap: 12px;
+  }
+  .story-bottom p {
+    font-size: 8px;
+  }
+  .registration-form-side {
+    padding: 35px 25px 30px 18px;
+  }
+  .signup-card {
+    padding: 23px;
+  }
+  .signup-heading h2 {
+    font-size: 29px;
+    letter-spacing: -1px;
+  }
+  .signup-heading p {
+    font-size: 10px;
+  }
+  .signup-card .field-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .signup-card .stack {
+    gap: 17px;
+  }
+  .signup-steps b {
+    display: none;
+  }
+  .signup-steps li {
+    justify-content: center;
+  }
+  .signup-steps li > span {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+  .signup-steps {
+    margin: 21px 0;
+    padding-bottom: 18px;
+  }
+  .signup-card label {
+    font-size: 10px;
+  }
+  .signup-card .check-label {
+    font-size: 9px;
+  }
+  .account-choice {
+    padding: 10px 11px;
+    gap: 8px;
+  }
+  .account-choice b {
+    font-size: 10px;
+  }
+  .account-choice small {
+    font-size: 8px;
+    line-height: 1.5;
+  }
+  .choice-icon {
+    font-size: 22px;
+  }
+  .register-submit {
+    font-size: 10px;
+  }
+  .form-signin {
+    font-size: 9px;
+  }
+  .signup-footnote {
+    font-size: 8px;
+    line-height: 1.6;
+    text-align: center;
+  }
+  .form-actions {
+    gap: 8px;
+  }
+  .form-actions .btn {
+    font-size: 10px;
+    padding: 11px 13px;
+  }
+  .provider-footer {
+    font-size: 8px;
+    padding-inline: 25px;
+    gap: 12px;
+  }
+  .provider-footer > span:last-child {
+    flex-basis: 100%;
+    font-size: 7px;
+  }
+  .workspace-shell {
+    grid-template-columns: 1fr;
+  }
+  .workspace-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 18px 25px;
+  }
+  .workspace-sidebar > .eyebrow,
+  .provider-mini,
+  .sidebar-bottom {
+    display: none;
+  }
+  .workspace-sidebar nav {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+  }
+  .workspace-sidebar nav button {
+    padding: 10px 13px;
+    font-size: 10px;
+  }
+  .workspace-sidebar nav button i {
+    display: none;
+  }
+  .workspace-main {
+    padding: 35px 25px 50px;
+  }
+  .workspace-heading h1 {
+    font-size: 35px;
+  }
+  .workspace-heading .eyebrow {
+    font-size: 7px;
+  }
+  .workspace-heading p {
+    font-size: 11px;
+  }
+  .metric-grid article {
+    padding: 20px;
+  }
+  .metric-grid strong {
+    font-size: 35px;
+  }
+  .admin-page {
+    padding: 40px 25px 60px;
+  }
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+  .verification-queue {
+    display: flex;
+    gap: 12px;
+    overflow: auto;
+    padding: 15px;
+  }
+  .verification-queue h2 {
+    display: none;
+  }
+  .queue-item {
+    min-width: 220px;
+    margin: 0;
+  }
+  .admin-page .workspace-heading {
+    align-items: flex-start;
+  }
+  .admin-page .workspace-heading .btn {
+    font-size: 9px;
+    padding: 10px 13px;
+    white-space: nowrap;
+  }
+  .identity-comparison > div {
+    min-height: 185px;
+  }
+}
+@media (max-width: 560px) {
+  .provider-nav {
+    height: 65px;
+    padding: 13px 18px;
+    gap: 14px;
+  }
+  .provider-nav .brand {
+    font-size: 23px;
+    gap: 8px;
+  }
+  .provider-nav .brand-mark {
+    width: 28px;
+    height: 29px;
+    font-size: 24px;
+  }
+  .provider-nav nav {
+    gap: 14px;
+    font-size: 10px;
+  }
+  .provider-nav nav a:nth-child(2) {
+    display: none;
+  }
+  .provider-nav button {
+    font-size: 10px;
+    min-width: 30px;
+    padding: 0;
+  }
+  .registration-page {
+    display: flex;
+    flex-direction: column;
+  }
+  .registration-story {
+    padding: 29px 22px 23px;
+    min-height: 218px;
+    border-bottom: 1px solid var(--line);
+  }
+  .registration-story > .eyebrow {
+    max-width: 260px;
+    font-size: 7px;
+  }
+  .story-heading {
+    margin-top: 18px;
+    max-width: 225px;
+  }
+  .story-heading h1 {
+    font-size: 32px;
+    letter-spacing: -1px;
+    line-height: 1.08;
+  }
+  .story-heading p {
+    font-size: 10px;
+    margin-top: 12px;
+    max-width: 210px;
+  }
+  .portrait-scene {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 140px;
+    height: 180px;
+    min-height: 0;
+    z-index: -1;
+  }
+  .portrait-scene > img {
+    width: 160px;
+    height: 220px;
+    left: -1px;
+    bottom: -24px;
+  }
+  .portrait-orbit {
+    width: 150px;
+    height: 150px;
+    left: -9px;
+    bottom: -15px;
+  }
+  .portrait-label {
+    display: none;
+  }
+  .story-bottom {
+    display: none;
+  }
+  .registration-form-side {
+    padding: 26px 18px 35px;
+  }
+  .signup-prelude {
+    margin-bottom: 15px;
+  }
+  .signup-prelude > span {
+    display: block;
+    font-size: 6px;
+    letter-spacing: 1px;
+  }
+  .signup-prelude a {
+    font-size: 8px;
+  }
+  .signup-card {
+    padding: 25px 23px;
+    border-radius: 15px;
+  }
+  .signup-heading h2 {
+    font-size: 34px;
+  }
+  .signup-heading p {
+    font-size: 11px;
+  }
+  .signup-card .field-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 12px;
+  }
+  .signup-card label {
+    font-size: 9px;
+  }
+  .signup-card input,
+  .signup-card select,
+  .signup-card textarea {
+    font-size: 10px;
+    padding: 10px;
+    min-height: 44px;
+  }
+  .signup-steps b {
+    display: inline;
+    font-size: 8px;
+  }
+  .signup-steps li {
+    justify-content: flex-start;
+    gap: 5px;
+  }
+  .signup-steps li > span {
+    width: 19px;
+    height: 19px;
+    font-size: 8px;
+    min-width: 19px;
+  }
+  .signup-steps {
+    gap: 6px;
+  }
+  .account-choice b {
+    font-size: 11px;
+  }
+  .account-choice small {
+    font-size: 8px;
+  }
+  .signup-card .check-label {
+    font-size: 9px;
+  }
+  .register-submit {
+    font-size: 11px;
+    min-height: 47px;
+  }
+  .form-signin {
+    font-size: 9px;
+  }
+  .signup-footnote {
+    font-size: 8px;
+    margin-top: 20px;
+  }
+  .signup-card .upload-tile {
+    padding: 17px 8px;
+  }
+  .upload-tile small {
+    font-size: 7px;
+  }
+  .upload-tile input {
+    font-size: 7px;
+    padding: 5px;
+    min-height: 30px;
+  }
+  .signup-card .task-opt {
+    font-size: 10px;
+    padding: 13px 11px;
+  }
+  .task-opt input {
+    width: 16px;
+    min-height: 16px;
+  }
+  .form-actions .btn {
+    font-size: 10px;
+  }
+  .success-card {
+    padding-block: 35px;
+  }
+  .success-card h2 {
+    font-size: 38px;
+  }
+  .success-card p {
+    font-size: 11px;
+  }
+  .workspace-sidebar {
+    padding: 14px 18px;
+  }
+  .workspace-sidebar nav {
+    gap: 3px;
+  }
+  .workspace-sidebar nav button {
+    font-size: 9px;
+    padding: 10px;
+    gap: 6px;
+  }
+  .workspace-sidebar nav button > span {
+    font-size: 14px;
+  }
+  .workspace-main {
+    padding: 30px 18px 45px;
+  }
+  .workspace-heading {
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 23px;
+  }
+  .workspace-heading h1 {
+    font-size: 30px;
+  }
+  .workspace-heading p {
+    font-size: 10px;
+  }
+  .workspace-heading .eyebrow {
+    font-size: 6px;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+  }
+  .online-toggle {
+    padding: 10px;
+    gap: 8px;
+  }
+  .online-toggle b {
+    font-size: 10px;
+  }
+  .online-toggle small {
+    display: none;
+  }
+  .online-toggle input {
+    width: 14px;
+    min-height: 14px;
+  }
+  .metric-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .metric-grid article {
+    grid-template-columns: 1fr auto;
+    padding: 18px 20px;
+    gap: 7px;
+  }
+  .metric-grid article strong {
+    grid-column: 2;
+    grid-row: 1/3;
+    align-self: center;
+    font-size: 35px;
+  }
+  .metric-grid article > span {
+    font-size: 11px;
+  }
+  .metric-grid article small {
+    font-size: 8px;
+  }
+  .job-cards {
+    grid-template-columns: 1fr;
+  }
+  .job-card {
+    padding: 22px;
+  }
+  .job-card h3 {
+    font-size: 18px;
+  }
+  .job-heading .eyebrow {
+    font-size: 8px;
+  }
+  .workspace-section-heading h2 {
+    font-size: 27px;
+  }
+  .workspace-panel {
+    padding: 22px;
+  }
+  .workspace-panel th,
+  .workspace-panel td {
+    padding: 14px 13px;
+  }
+  .job-actions .btn {
+    font-size: 10px;
+    min-height: 42px;
+  }
+  .schedule-panel h2 {
+    font-size: 27px;
+  }
+  .schedule-panel .field-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .day-buttons {
+    gap: 5px;
+  }
+  .day-buttons .pill {
+    font-size: 10px;
+    padding: 7px 10px;
+  }
+  .admin-page {
+    padding: 35px 18px 50px;
+  }
+  .admin-page .workspace-heading {
+    flex-direction: column;
+  }
+  .admin-page .workspace-heading .btn {
+    font-size: 10px;
+    min-height: 40px;
+  }
+  .admin-page > .notice {
+    font-size: 10px;
+  }
+  .verification-detail {
+    padding: 22px;
+  }
+  .verification-detail .workspace-section-heading {
+    gap: 10px;
+  }
+  .verification-detail .workspace-section-heading h2 {
+    font-size: 24px;
+  }
+  .identity-comparison {
+    gap: 12px;
+  }
+  .identity-comparison > div {
+    padding: 12px;
+    min-height: 175px;
+  }
+  .identity-comparison img {
+    width: 80px;
+    height: 110px;
+  }
+  .identity-comparison > div > span {
+    font-size: 7px;
+  }
+  .document-placeholder b {
+    font-size: 10px;
+  }
+  .document-placeholder small {
+    font-size: 7px;
+    text-align: center;
+  }
+  .review-actions .btn {
+    font-size: 9px;
+    padding: 10px 12px;
+    min-height: 42px;
+  }
+  .provider-modal {
+    padding: 24px;
+  }
+  .provider-modal h2 {
+    font-size: 26px;
+  }
+  .provider-footer {
+    padding: 20px 18px;
+    font-size: 7px;
+    gap: 13px;
+  }
+  .provider-footer > span:last-child {
+    font-size: 7px;
+  }
+  .territory-map {
+    height: 270px;
+  }
+}
+/* Readable mobile form text; keep the reference composition without tiny fields. */
+@media (max-width: 560px) {
+  html[lang='bn'] .story-heading h1 {
+    font-size: 28px;
+    line-height: 1.25;
+  }
+  .story-heading p {
+    font-size: 12px;
+    max-width: 200px;
+  }
+  .registration-story {
+    min-height: 235px;
+  }
+  .signup-card label {
+    font-size: 12px;
+    gap: 9px;
+  }
+  .signup-card input,
+  .signup-card select,
+  .signup-card textarea {
+    font-size: 13px;
+    min-height: 46px;
+  }
+  .signup-card .check-label {
+    font-size: 12px;
+    line-height: 1.65;
+  }
+  .signup-card .check-label input {
+    min-height: 18px;
+    width: 18px;
+    height: 18px;
+  }
+  .signup-heading p {
+    font-size: 13px;
+  }
+  .field-caption {
+    font-size: 12px;
+  }
+  .account-choice b {
+    font-size: 13px;
+  }
+  .account-choice small {
+    font-size: 11px;
+  }
+  .account-choice {
+    padding: 13px;
+  }
+  .register-submit {
+    font-size: 13px;
+    min-height: 48px;
+  }
+  .form-signin {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .signup-footnote {
+    font-size: 11px;
+  }
+  .signup-card .task-opt {
+    font-size: 13px;
+    padding: 15px 12px;
+  }
+  .signup-card .task-opt input {
+    width: 18px;
+    height: 18px;
+    min-height: 18px;
+  }
+  .task-opt b {
+    font-size: 12px;
+  }
+  .task-selection > small {
+    font-size: 12px;
+  }
+  .signup-card .notice {
+    font-size: 12px;
+  }
+  .zone-chips .pill {
+    min-height: 44px;
+    font-size: 11px;
+  }
+  .form-actions .btn {
+    font-size: 12px;
+    min-height: 46px;
+  }
+  .upload-tile small {
+    font-size: 10px;
+  }
+  .signup-card .upload-tile {
+    font-size: 12px;
+  }
+  .upload-tile input {
+    font-size: 10px;
+  }
+  .signup-card .error {
+    font-size: 12px;
+  }
+  .workspace-heading p {
+    font-size: 13px;
+  }
+  .workspace-notice {
+    font-size: 12px;
+  }
+  .job-meta {
+    font-size: 12px;
+  }
+  .job-actions .btn {
+    font-size: 12px;
+    min-height: 44px;
+  }
+  .job-price span {
+    font-size: 11px;
+  }
+  .workspace-sidebar nav button {
+    min-height: 44px;
+    font-size: 11px;
+    padding: 10px 7px;
+  }
+  .workspace-panel .notice {
+    font-size: 12px;
+  }
+  .day-buttons .pill {
+    min-height: 44px;
+    font-size: 12px;
+  }
+  .schedule-panel p {
+    font-size: 13px;
+  }
+  .identity-comparison > div > span {
+    font-size: 10px;
+  }
+  .document-placeholder b {
+    font-size: 12px;
+  }
+  .document-placeholder small {
+    font-size: 10px;
+  }
+  .review-actions .btn {
+    font-size: 11px;
+    min-height: 44px;
+  }
+  .admin-page > .notice {
+    font-size: 12px;
+  }
+}

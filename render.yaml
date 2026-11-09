@@ -1,0 +1,34 @@
+services:
+  # 1. Backend Web API Service (.NET 9)
+  - type: web
+    name: find-skilled-people-api
+    env: docker
+    dockerfilePath: Backend/Dockerfile
+    dockerContext: Backend
+    plan: free
+    region: oregon
+    healthCheckPath: /health/live
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: find-skilled-people-db
+          property: connectionString
+      - key: Jwt__SigningKey
+        generateValue: true
+      - key: Jwt__Issuer
+        value: https://find-skilled-people-api.onrender.com
+      - key: Jwt__Audience
+        value: https://findskilledpeople.vercel.app
+      - key: Cors__AllowedOrigins__0
+        value: https://findskilledpeople.vercel.app
+
+databases:
+  # 2. Managed PostgreSQL / Relational Database (Free Tier)
+  - name: find-skilled-people-db
+    plan: free
+    region: oregon
+    databaseName: skillcommerce
+    user: skillcommerce_admin
+

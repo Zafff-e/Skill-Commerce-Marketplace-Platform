@@ -1,0 +1,422 @@
+<section class="registration-page">
+  <aside class="registration-story">
+    <span class="eyebrow">{{
+      L('THE PEOPLE BEHIND EVERYDAY PROGRESS', 'প্রতিদিনের অগ্রগতির পেছনের মানুষ')
+    }}</span>
+    <div class="story-heading">
+      <h1>
+        {{ L('Good at your craft?', 'নিজের কাজে দক্ষ?') }}<br /><em>{{
+          L('Make it your calling.', 'দক্ষতাই হোক পরিচয়।')
+        }}</em>
+      </h1>
+      <p>
+        {{
+          L(
+            'Bring your skills. We’ll make the introductions.',
+            'আপনার দক্ষতা নিয়ে আসুন। পরিচয়ের ব্যবস্থা আমাদের।'
+          )
+        }}
+      </p>
+    </div>
+    <div class="portrait-scene">
+      <div class="portrait-orbit"></div>
+      <img
+        src="assets/electrician.svg"
+        [alt]="L('Illustration of an electrician', 'ইলেকট্রিশিয়ানের চিত্র')"
+      /><span class="portrait-label"
+        ><small>{{ L('MEET YOUR NEXT CHAPTER', 'শুরু হোক নতুন পথচলা') }}</small
+        ><strong>{{ L('Skilled. Local. You.', 'দক্ষতা। নিজের এলাকা। আপনি।') }}</strong></span
+      >
+    </div>
+    <div class="story-bottom">
+      <span>01</span>
+      <p>
+        {{
+          L(
+            'Create your account. Add your skills. Let your work do the talking.',
+            'অ্যাকাউন্ট খুলুন। দক্ষতা যোগ করুন। আপনার কাজই কথা বলুক।'
+          )
+        }}
+      </p>
+    </div>
+  </aside>
+  <div class="registration-form-side">
+    @if (complete()) {
+      <section class="signup-card success-card">
+        <span class="success-icon">✓</span
+        ><span class="eyebrow">{{ L('DEMO PROFILE SUBMITTED', 'ডেমো প্রোফাইল জমা হয়েছে') }}</span>
+        <h2>
+          {{ L('Your next chapter', 'আপনার নতুন পথচলা') }}<br /><em>{{
+            L('starts here.', 'শুরু এখানেই।')
+          }}</em>
+        </h2>
+        <p>
+          {{
+            L(
+              'Your sample profile is pending review in this session. No real account was created and no identity documents were uploaded.',
+              'এই সেশনে আপনার নমুনা প্রোফাইল পর্যালোচনার অপেক্ষায়। বাস্তব অ্যাকাউন্ট তৈরি বা পরিচয়পত্র আপলোড হয়নি।'
+            )
+          }}
+        </p>
+        <div class="notice">
+          {{ L('Pending review · credentials unverified', 'পর্যালোচনাধীন · পরিচয়পত্র অযাচাইকৃত') }}
+        </div>
+        <a class="btn full" routerLink="/dashboard"
+          >{{ L('Open your workspace', 'কর্মক্ষেত্র খুলুন') }} ↗</a
+        >
+      </section>
+    } @else {
+      <div class="signup-prelude">
+        <span>{{ L('YOUR SKILL DESERVES A STAGE', 'আপনার দক্ষতার জন্য একটি মঞ্চ') }}</span
+        ><a routerLink="/dashboard"
+          >{{ L('Explore demo workspace', 'ডেমো কর্মক্ষেত্র দেখুন') }} ↗</a
+        >
+      </div>
+      <section class="signup-card">
+        <div class="signup-heading">
+          <span class="eyebrow">{{ L('BECOME A KAARIGOR', 'কারিগর হিসেবে যোগ দিন') }}</span>
+          <h2>
+            {{
+              step() === 0
+                ? L('Create an account', 'অ্যাকাউন্ট তৈরি করুন')
+                : step() === 1
+                  ? L('What do you do best?', 'কোন কাজে আপনি দক্ষ?')
+                  : step() === 2
+                    ? L('Keep it close to home.', 'নিজের এলাকায় কাজ করুন।')
+                    : L('Build trust from day one.', 'প্রথম দিন থেকেই আস্থা।')
+            }}
+          </h2>
+          <p>
+            {{
+              step() === 0
+                ? L('A fresh start for you and your skills.', 'আপনার ও আপনার দক্ষতার নতুন শুরু।')
+                : L(
+                    'A few details to help customers find the right person.',
+                    'সঠিক দক্ষ কর্মী খুঁজে পেতে কয়েকটি তথ্য দিন।'
+                  )
+            }}
+          </p>
+        </div>
+        <ol class="signup-steps" aria-label="Registration progress">
+          @for (
+            s of [
+              L('Account', 'অ্যাকাউন্ট'),
+              L('Your skills', 'দক্ষতা'),
+              L('Your area', 'এলাকা'),
+              L('Verification', 'যাচাই'),
+            ];
+            track $index
+          ) {
+            <li [class.current]="step() === $index" [class.done]="step() > $index">
+              <span>{{ step() > $index ? '✓' : $index + 1 }}</span
+              ><b>{{ s }}</b>
+            </li>
+          }
+        </ol>
+        @if (step() === 0) {
+          <form [formGroup]="account" (ngSubmit)="next()" class="stack">
+            <div class="account-type">
+              <span class="field-caption">{{ L('I’m joining as', 'যোগ দিচ্ছি') }}</span>
+              <div class="account-choice">
+                <span class="choice-icon">↗</span>
+                <div>
+                  <b>{{ L('An independent professional', 'স্বতন্ত্র দক্ষ কর্মী') }}</b
+                  ><small>{{
+                    L(
+                      'Offer your skills to customers in your area',
+                      'নিজের এলাকায় দক্ষতা দিয়ে সেবা দিন'
+                    )
+                  }}</small>
+                </div>
+                <span class="choice-check">✓</span>
+              </div>
+            </div>
+            <div class="field-grid">
+              <label
+                >{{ L('First name', 'নামের প্রথম অংশ')
+                }}<input
+                  formControlName="firstName"
+                  autocomplete="given-name"
+                  [class.invalid]="invalid('firstName')"
+                  [attr.aria-invalid]="invalid('firstName')"
+                  [placeholder]="L('First name', 'নামের প্রথম অংশ')" /></label
+              ><label
+                >{{ L('Last name', 'নামের শেষ অংশ')
+                }}<input
+                  formControlName="lastName"
+                  autocomplete="family-name"
+                  [class.invalid]="invalid('lastName')"
+                  [attr.aria-invalid]="invalid('lastName')"
+                  [placeholder]="L('Last name', 'নামের শেষ অংশ')" /></label
+              ><label
+                >{{ L('Mobile number', 'মোবাইল নম্বর')
+                }}<input
+                  formControlName="phone"
+                  type="tel"
+                  autocomplete="tel"
+                  placeholder="01XXXXXXXXX"
+                  [class.invalid]="invalid('phone')"
+                  [attr.aria-invalid]="invalid('phone')" /></label
+              ><label
+                >{{ L('Email address', 'ইমেইল ঠিকানা')
+                }}<input
+                  formControlName="email"
+                  type="email"
+                  autocomplete="email"
+                  [placeholder]="L('you@example.com', 'ইমেইল ঠিকানা')"
+                  [class.invalid]="invalid('email')"
+                  [attr.aria-invalid]="invalid('email')" /></label
+              ><label
+                >{{ L('Password', 'পাসওয়ার্ড') }}
+                <div class="password-field">
+                  <input
+                    formControlName="password"
+                    [type]="showPassword() ? 'text' : 'password'"
+                    autocomplete="new-password"
+                    [placeholder]="L('At least 10 characters', 'অন্তত ১০ অক্ষর')"
+                    [class.invalid]="invalid('password')"
+                  /><button
+                    type="button"
+                    (click)="showPassword.set(!showPassword())"
+                    [attr.aria-label]="L('Show or hide passwords', 'পাসওয়ার্ড দেখুন বা লুকান')"
+                  >
+                    {{ showPassword() ? '◉' : '◎' }}
+                  </button>
+                </div></label
+              ><label
+                >{{ L('Confirm password', 'পুনরায় পাসওয়ার্ড')
+                }}<input
+                  formControlName="confirm"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  autocomplete="new-password"
+                  [placeholder]="L('Re-enter password', 'পাসওয়ার্ড আবার লিখুন')"
+              /></label>
+            </div>
+            <label class="check-label demo-ack"
+              ><input type="checkbox" formControlName="acknowledge" /><span
+                >{{
+                  L(
+                    'I understand this is a demo. I will use sample information and won’t create a real account.',
+                    'আমি বুঝেছি এটি ডেমো। নমুনা তথ্য ব্যবহার করব; বাস্তব অ্যাকাউন্ট তৈরি হবে না।'
+                  )
+                }}
+                <a href="/#/policies">{{
+                  L('Preview privacy notice', 'প্রিভিউ গোপনীয়তা বিজ্ঞপ্তি')
+                }}</a></span
+              ></label
+            >
+            @if (error()) {
+              <div class="error" role="alert">{{ error() }}</div>
+            }
+            <button class="btn full register-submit" type="submit">
+              {{ L('Create demo account & continue', 'ডেমো অ্যাকাউন্ট তৈরি ও পরবর্তী ধাপ') }}
+              <span>→</span>
+            </button>
+            <p class="form-signin">
+              {{ L('Already a Kaarigor?', 'ইতোমধ্যে কারিগর?') }}
+              <a routerLink="/dashboard">{{
+                L('Explore your demo workspace', 'ডেমো কর্মক্ষেত্র দেখুন')
+              }}</a>
+            </p>
+          </form>
+        } @else if (step() === 1) {
+          <form [formGroup]="skill" (ngSubmit)="next()" class="stack">
+            <div class="field-grid">
+              <label
+                >{{ L('Your primary trade', 'প্রধান পেশা')
+                }}<select formControlName="trade" (change)="changeTrade()">
+                  @for (c of w.categories; track c.id) {
+                    <option [value]="c.id">{{ c.name[w.lang()] }}</option>
+                  }
+                </select></label
+              ><label
+                >{{ L('Years of experience', 'অভিজ্ঞতা (বছর)')
+                }}<input formControlName="experience" type="number" min="0" max="60"
+              /></label>
+            </div>
+            <div class="task-selection">
+              <h3>{{ L('Choose the tasks you offer', 'যে কাজগুলো করেন') }}</h3>
+              <small>{{
+                L(
+                  'Standard sample labour rates. Parts are separate.',
+                  'নমুনা শ্রমমূল্য। যন্ত্রাংশ আলাদা।'
+                )
+              }}</small>
+              @for (task of currentCategory().tasks; track task.id) {
+                <label class="task-opt"
+                  ><input
+                    type="checkbox"
+                    [checked]="selectedTasks().includes(task.id)"
+                    (change)="toggleTask(task.id)"
+                  /><span>{{ task.name[w.lang()] }}</span
+                  ><b>৳{{ task.price }}</b></label
+                >
+              }
+            </div>
+            <label
+              >{{ L('A little about your work (optional)', 'কাজ সম্পর্কে কিছু কথা (ঐচ্ছিক)')
+              }}<textarea formControlName="bio" rows="3"></textarea>
+            </label>
+            @if (error()) {
+              <div class="error" role="alert">{{ error() }}</div>
+            }
+            <div class="form-actions">
+              <button class="btn secondary" type="button" (click)="step.set(0)">
+                {{ L('Back', 'পূর্ববর্তী') }}</button
+              ><button class="btn" type="submit">
+                {{ L('Continue to your area', 'এলাকা নির্বাচন') }} →
+              </button>
+            </div>
+          </form>
+        } @else if (step() === 2) {
+          <div class="stack">
+            <div class="notice">
+              {{
+                L(
+                  'Select an area on the map. Your exact home location is never shown publicly.',
+                  'ম্যাপে এলাকা বেছে নিন। আপনার বাড়ির সুনির্দিষ্ট অবস্থান প্রকাশ হবে না।'
+                )
+              }}
+            </div>
+            <div class="territory-map">
+              <svg
+                viewBox="0 0 520 530"
+                role="group"
+                [attr.aria-label]="L('Choose your service area', 'সেবার এলাকা বেছে নিন')"
+              >
+                @for (z of w.zones; track z.id) {
+                  <g
+                    role="button"
+                    tabindex="0"
+                    [attr.aria-label]="z.name[w.lang()]"
+                    [attr.aria-pressed]="zone() === z.id"
+                    (click)="zone.set(z.id)"
+                    (keydown.enter)="zone.set(z.id)"
+                    (keydown.space)="$event.preventDefault(); zone.set(z.id)"
+                    [class.chosen]="zone() === z.id"
+                  >
+                    <path [attr.d]="z.path" />
+                    <text [attr.x]="z.x" [attr.y]="z.y" text-anchor="middle">
+                      {{ z.name[w.lang()] }}
+                    </text>
+                  </g>
+                }
+              </svg>
+            </div>
+            <div class="zone-chips">
+              @for (z of w.zones; track z.id) {
+                <button
+                  class="pill"
+                  [class.active]="zone() === z.id"
+                  [attr.aria-pressed]="zone() === z.id"
+                  (click)="zone.set(z.id)"
+                >
+                  {{ z.name[w.lang()] }}
+                </button>
+              }
+            </div>
+            <label
+              >{{ L('Travel radius', 'যাতায়াতের পরিধি') }} · {{ radius() }} {{ L('km', 'কি.মি.')
+              }}<input
+                type="range"
+                min="1"
+                max="15"
+                [value]="radius()"
+                (input)="radius.set(+$any($event.target).value)"
+            /></label>
+            <div class="form-actions">
+              <button class="btn secondary" (click)="step.set(1)">
+                {{ L('Back', 'পূর্ববর্তী') }}</button
+              ><button class="btn" (click)="next()">
+                {{ L('Continue to verification', 'যাচাইয়ের ধাপে যান') }} →
+              </button>
+            </div>
+          </div>
+        } @else {
+          <form [formGroup]="identity" (ngSubmit)="submit()" class="stack">
+            <div class="notice">
+              {{
+                L(
+                  'Use sample documents only. Files are validated locally, never uploaded, and discarded on submission or reload. Production identity verification must use your secure backend.',
+                  'শুধু নমুনা নথি ব্যবহার করুন। ফাইল স্থানীয়ভাবে পরীক্ষা হবে, আপলোড হবে না; জমা বা রিলোডে মুছে যাবে। বাস্তব যাচাইয়ের জন্য সুরক্ষিত ব্যাকএন্ড প্রয়োজন।'
+                )
+              }}
+            </div>
+            <label
+              >{{
+                L(
+                  'Sample NID number (10, 13 or 17 digits)',
+                  'নমুনা এনআইডি নম্বর (১০, ১৩ বা ১৭ সংখ্যা)'
+                )
+              }}<input formControlName="nid" inputmode="numeric" autocomplete="off" maxlength="17"
+            /></label>
+            <div class="field-grid">
+              @for (
+                doc of [
+                  { key: 'front', en: 'NID · front side', bn: 'এনআইডি · সামনের পাশ' },
+                  { key: 'back', en: 'NID · back side', bn: 'এনআইডি · পেছনের পাশ' },
+                ];
+                track doc.key
+              ) {
+                <label class="upload-tile"
+                  ><span>↑</span>{{ L(doc.en, doc.bn) }}<small>PDF / JPG / PNG · 5 MB</small
+                  ><input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    (change)="pickFile($event, doc.key)"
+                  />
+                  @if (files[doc.key]) {
+                    <b>{{ filename(doc.key) }}</b>
+                  }
+                </label>
+              }
+            </div>
+            <label class="upload-tile"
+              >{{
+                L(
+                  currentCategory().id === 'legal'
+                    ? 'Court Clerk ID / court credential (required)'
+                    : 'Trade license or certificate (optional)',
+                  'কোর্ট ক্লার্ক আইডি / পেশাগত সনদ'
+                )
+              }}<input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                (change)="pickFile($event, 'credential')"
+              />
+              @if (files['credential']) {
+                <b>{{ filename('credential') }}</b>
+              }</label
+            ><label class="check-label"
+              ><input formControlName="consent" type="checkbox" />{{
+                L(
+                  'I understand this is a local verification demo, not an actual background check.',
+                  'আমি বুঝেছি এটি স্থানীয় যাচাই ডেমো, বাস্তব পরিচয় যাচাই নয়।'
+                )
+              }}</label
+            >
+            @if (error()) {
+              <div class="error" role="alert">{{ error() }}</div>
+            }
+            <div class="form-actions">
+              <button class="btn secondary" type="button" (click)="step.set(2)">
+                {{ L('Back', 'পূর্ববর্তী') }}</button
+              ><button class="btn" type="submit">
+                {{ L('Submit sample profile', 'নমুনা প্রোফাইল জমা দিন') }} →
+              </button>
+            </div>
+          </form>
+        }
+      </section>
+      <div class="signup-footnote">
+        <span class="shield-tiny">✓</span
+        >{{
+          L(
+            'Your credentials. Your reputation. Your next opportunity.',
+            'আপনার পরিচয়। আপনার সুনাম। আপনার পরবর্তী সুযোগ।'
+          )
+        }}
+      </div>
+    }
+  </div>
+</section>
