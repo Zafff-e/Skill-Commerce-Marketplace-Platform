@@ -1,19 +1,31 @@
-# Angular specific
-/dist/
-/out-tsc/
-/tmp/
-/coverage/
-/e2e/test-output/
-/.angular/
-.angular/
+# OS & System artifacts
+desktop.ini
+**/desktop.ini
+Thumbs.db
+.DS_Store
+*.rar
+Frontend_backup_v1/
 
-# Node modules & dependencies
-/node_modules/
-/package-lock.json
-/yarn.lock
+# Frontend & Dependencies
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.angular/
+**/.angular/
+out-tsc/
+**/out-tsc/
+coverage/
+**/coverage/
+.vite/
+**/.vite/
+package-lock.json
+yarn.lock
 
 # Environment & secrets
-/.env
+.env
+**/.env
+.env*.local
 *.user
 *.suo
 
@@ -24,9 +36,19 @@
 
 # .NET & IDE build outputs
 [Bb]in/
+**/bin/
 [Oo]bj/
+**/obj/
 .vs/
+**/.vs/
 .vscode/
+**/.vscode/
+
+# Mobile / Flutter artifacts
+.dart_tool/
+**/.dart_tool/
+build/
+**/build/
 
 # Logs
 npm-debug.log*

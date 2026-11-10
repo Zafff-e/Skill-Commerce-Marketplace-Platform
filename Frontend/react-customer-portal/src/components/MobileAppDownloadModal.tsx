@@ -14,20 +14,32 @@ export const MobileAppDownloadModal: React.FC<MobileAppDownloadModalProps> = ({
 }) => {
   const [platform, setPlatform] = useState<'android' | 'ios'>('android');
   const [copied, setCopied] = useState(false);
+  const [downloadMode, setDownloadMode] = useState<'github' | 'lan'>('github');
 
   if (!isOpen) return null;
 
+  const GITHUB_MOBILE_REPO = 'https://github.com/Zafff-e/Skill-Commerce-Marketplace-Platform/tree/main/mobile_app';
+  const GITHUB_SDK_ZIP = 'https://github.com/Zafff-e/Skill-Commerce-Marketplace-Platform/raw/main/Frontend/react-customer-portal/public/downloads/SkillCommerce_Mobile_SDK_v1.0.0.zip';
+  const LAN_HOST = 'http://192.168.8.162:5173';
+
+  const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
   const currentHost = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
-  const downloadUrl = `${currentHost}/downloads/mobile_app.html`;
-  const sdkZipUrl = `${currentHost}/downloads/SkillCommerce_Mobile_SDK_v1.0.0.zip`;
+
+  // If local, phone scanning localhost would fail. Use GitHub or Local LAN IP.
+  const activeQrUrl = downloadMode === 'github' 
+    ? GITHUB_MOBILE_REPO 
+    : (isLocal ? `${LAN_HOST}/downloads/mobile_app.html` : `${currentHost}/downloads/mobile_app.html`);
+
+  const downloadUrl = isLocal ? `${LAN_HOST}/downloads/mobile_app.html` : `${currentHost}/downloads/mobile_app.html`;
+  const sdkZipUrl = GITHUB_SDK_ZIP;
 
   // Dynamic QR Code SVG generator link
   const qrSvgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
-    downloadUrl
+    activeQrUrl
   )}&bgcolor=ffffff&color=064e3b&margin=6`;
 
   const copyLink = () => {
-    navigator.clipboard.writeText(downloadUrl);
+    navigator.clipboard.writeText(activeQrUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -118,6 +130,48 @@ export const MobileAppDownloadModal: React.FC<MobileAppDownloadModalProps> = ({
           </p>
         </div>
 
+        {/* Download Source Selector */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 16 }}>
+          <button
+            type="button"
+            onClick={() => setDownloadMode('github')}
+            style={{
+              padding: '6px 14px',
+              borderRadius: 20,
+              border: downloadMode === 'github' ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.15)',
+              background: downloadMode === 'github' ? 'rgba(16, 185, 129, 0.25)' : 'transparent',
+              color: downloadMode === 'github' ? '#34d399' : '#94a3b8',
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+            }}
+          >
+            🌐 {lang === 'bn' ? 'গিটহাব ক্লাউড (সরাসরি ফোনে ডাউনলোড)' : 'GitHub Cloud (Universal)'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setDownloadMode('lan')}
+            style={{
+              padding: '6px 14px',
+              borderRadius: 20,
+              border: downloadMode === 'lan' ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.15)',
+              background: downloadMode === 'lan' ? 'rgba(16, 185, 129, 0.25)' : 'transparent',
+              color: downloadMode === 'lan' ? '#34d399' : '#94a3b8',
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+            }}
+          >
+            📶 {lang === 'bn' ? 'লোকাল ওয়াই-ফাই নেটওয়ার্ক' : 'Local Wi-Fi Network'}
+          </button>
+        </div>
+
         {/* Platform Selector Tabs */}
         <div
           style={{
@@ -193,23 +247,26 @@ export const MobileAppDownloadModal: React.FC<MobileAppDownloadModalProps> = ({
           {/* QR Code Box */}
           <div
             style={{
-              width: 160,
-              height: 160,
+              width: 170,
               background: '#ffffff',
               borderRadius: 14,
-              padding: 8,
+              padding: 10,
               boxShadow: '0 8px 25px rgba(0,0,0,0.4)',
               flexShrink: 0,
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'center',
+              gap: 6,
             }}
           >
             <img
               src={qrSvgUrl}
               alt="Scan to Install SkillCommerce App"
-              style={{ width: '100%', height: '100%', borderRadius: 8, display: 'block' }}
+              style={{ width: 150, height: 150, borderRadius: 8, display: 'block' }}
             />
+            <span style={{ fontSize: 10, color: '#064e3b', textAlign: 'center', fontWeight: 700 }}>
+              {downloadMode === 'github' ? 'গিটহাব ক্লাউড ডাউনলোড' : 'লোকাল ওয়াই-ফাই (LAN)'}
+            </span>
           </div>
 
           {/* Quick Steps */}
@@ -240,9 +297,9 @@ export const MobileAppDownloadModal: React.FC<MobileAppDownloadModalProps> = ({
         {/* Direct Action Buttons */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div style={{ display: 'flex', gap: 10 }}>
-            {/* Open Mobile Version in New Tab */}
+            {/* Open Mobile Version in New Tab / GitHub */}
             <a
-              href={downloadUrl}
+              href={downloadMode === 'github' ? GITHUB_MOBILE_REPO : downloadUrl}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -262,7 +319,9 @@ export const MobileAppDownloadModal: React.FC<MobileAppDownloadModalProps> = ({
               }}
             >
               <ExternalLink size={16} />
-              {lang === 'bn' ? 'সরাসরি মোবাইলে ওপেন করুন' : 'Launch Mobile App'}
+              {downloadMode === 'github'
+                ? (lang === 'bn' ? 'গিটহাবে অ্যাপটি দেখুন' : 'Open on GitHub')
+                : (lang === 'bn' ? 'সরাসরি মোবাইলে ওপেন করুন' : 'Launch Mobile App')}
             </a>
 
             {/* Copy Link Button */}
